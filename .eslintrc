@@ -1,0 +1,29 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parser": "eslint-plugin-coffee",
+  "plugins": ["coffee"],
+  
+  "globals": {
+    //"log": "writable",
+    "log": "readonly"
+  },
+  
+  "rules": {
+    
+    // Can include existing rules that "just work":
+    "no-undef": "error",
+    
+    // ...and CoffeeScript custom overriding rules.
+    // For these, the corresponding existing rule should also be disabled if need be:
+    "no-unused-vars": "off",
+    "coffee/no-unused-vars": "error",
+    
+    "coffee/id-length": "off"
+  },
+  "extends": [
+    "plugin:coffee/eslint-recommended"
+  ]
+}

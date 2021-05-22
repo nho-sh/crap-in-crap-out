@@ -1,0 +1,31 @@
+{
+  "name": "crap-in-crap-out",
+  "version": "1.0.0",
+  "description": "A strict JSON validator with a very simple, wysiwyg, human friendly schema",
+  "main": "dist/index.js",
+  "scripts": {
+    "pre-deploy": "npm run test && npm run lint && npm run compile",
+    "compile": "coffee --output dist --compile src",
+    "debug": "mocha --require coffeescript/register --nodejs --inspect-brk ./test/_entry.coffee",
+    "package": "rm *.tgz && npm pack",
+    "test": "nyc --require coffeescript/register --extension .coffee --lines=99 --check-coverage=true --reporter=html --reporter=text mocha --require coffeescript/register ./test/_entry.coffee",
+    "lint": "eslint 'src/*.coffee' -c ./.eslintrc"
+  },
+  "keywords": [
+    "function",
+    "arguments",
+    "validator"
+  ],
+  "author": "nhosh",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffeescript": "^2.5.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-coffee": "^0.1.12",
+    "eslint-plugin-coffeescript": "^1.0.0",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1"
+  }
+}
