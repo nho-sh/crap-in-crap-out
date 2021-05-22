@@ -29,20 +29,33 @@ is mirrored by the exact same level of validation level.
 const data = require('./data.json');
 const { guard } = require('crap-in-crap-out');
 
-const validationSchema = [
+const validationSchema =
+// Top level, we want an array
+[
 	// Every element in the array adheres to this object
 	{
 		intArray: [ 'integer' ],
 		objArray: [
 			{
-				a: 'float!eq=-0.1', // Required! number equal to 0.1
-				b: 'uuid?' // Optional? UUID
+				// Required! number equal to 0.1
+				a: 'float!eq=-0.1',
+				
+				// Optional? UUID
+				b: 'uuid?'
 			}
 		],
-		string: 'string?gte=3' // Optional? string with a minimum length of 3
-		positiveNumber: 'float!gt=0', // Required! number above 0
-		"optionalArray?": [ 'boolean' ] // This array can be omitted with a trailing ? in the key
-		"optionalObject?": { a: 'boolean' } // This object can be omitted with a trailing ? in the key
+		
+		// Optional? string with a minimum length of 3
+		string: 'string?gte=3',
+		
+		// Required! number above 0
+		positiveNumber: 'float!gt=0',
+		
+		// This array can be omitted with a trailing ? in the key
+		"optionalArray?": [ 'boolean' ],
+		
+		// This object can be omitted with a trailing ? in the key
+		"optionalObject?": { a: 'boolean' } 
 	}
 	
 	// If you define a 2nd array element
