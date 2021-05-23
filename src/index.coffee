@@ -8,7 +8,7 @@ querystring = require 'querystring'
 	badSchemaNumber
 } = require './errors'
 
-parseRegex = /^(boolean|string|integer|float|uuid|function|email|hex-color|jwt|password)([!?]|$)(.*)/
+parseRegex = /^(boolean|string|integer|number|uuid|function|email|hex-color|jwt|password|bytesize)([!?]|$)(.*)/
 schemaParser = (schema) ->
 	if !isString(schema)
 		throw new Error notAGoodSchema
@@ -31,10 +31,10 @@ schemaParser = (schema) ->
 	
 	getNum = (str) ->
 		return null if str == undefined
-		float = parseFloat(str)
-		if isNaN float
+		number = parseFloat(str)
+		if isNaN number
 			throw new Error badSchemaNumber(schema, str)
-		return float
+		return number
 	
 	# Parse out some numbers and check if they make sense
 	gte = getNum query.gte
@@ -59,8 +59,8 @@ schemaParser = (schema) ->
 	else if type == 'integer'
 		return { source: schema, type: 'integer',   optional, gte, lte, gt, lt, eq, in: ins }
 	
-	else if type == 'float'
-		return { source: schema, type: 'float',     optional, gte, lte, gt, lt, eq, in: ins }
+	else if type == 'number'
+		return { source: schema, type: 'number',     optional, gte, lte, gt, lt, eq, in: ins }
 	
 	else if type == 'function'
 		return { source: schema, type: 'function',  optional }
@@ -78,6 +78,25 @@ schemaParser = (schema) ->
 		return { source: schema, type: 'string',    optional, regex: /^#[A-Fa-f0-9]{6}$/ }
 	else if type == 'password'
 		return { source: schema, type: 'string',    optional, gte: 8 }
+	else if type == 'bytesize'
+		return { source: schema, type: 'string',    optional, regex:
+			new RegExp([
+				"^"
+				# A positive number 000.123...
+				"[0-9]+(\\.[0-9]+)?("
+				# Allow optional spacing
+				"\\s*("
+				# Base unit
+				"B"
+				# Decimal based namings
+				"|kB|kilobyte|MB|megabyte|GB|gigabyte|TB|terabyte|PB|petabyte|EB|exabyte|ZB|zettabyte|YB|yottabyte"
+				# Binary based namings
+				"|KiB|kibibyte|MiB|mebibyte|GiB|gibibyte|TiB|tebibyte|PiB|pebibyte|EiB|exbibyte|ZiB|zebibyte|YiB|yobibyte"
+				# Unit is optional -> Just bytes?
+				"))?"
+				"$"
+			].join(''))
+		}
 
 anythingValidator = (parsedSchema) ->
 	return (good) ->
@@ -153,7 +172,7 @@ integerValidator = (parsedSchema) ->
 		
 		return "Not an integer: #{good}"
 
-floatValidator = (parsedSchema) ->
+numberValidator = (parsedSchema) ->
 	
 	return (good) ->
 		if good == null
@@ -174,7 +193,7 @@ floatValidator = (parsedSchema) ->
 			return "#{good} > #{parsedSchema.lt} evaluated false"   if parsedSchema.lt  && good >= parsedSchema.lt
 			return false
 		
-		return "#{good} is not a floating number"
+		return "#{good} is not a numbering number"
 
 shortUuidRegex = /^[a-fA-F0-9]{32}$/
 longUuidRegex  = /^[a-fA-F0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/
@@ -254,22 +273,22 @@ valueChecker = (schema) ->
 			
 			integerValidator(parsedSchema)
 		
-		when 'float'
+		when 'number'
 			
 			if isDefined parsedSchema.eq
 				val = parseFloat(parsedSchema.eq)
 				if isNaN val
-					throw new Error("#{parsedSchema.source} is not a float: eq=#{parsedSchema.eq}")
+					throw new Error("#{parsedSchema.source} is not a number: eq=#{parsedSchema.eq}")
 				parsedSchema.eq = val
 			
 			if isDefined parsedSchema.in
 				parsedSchema.in = parsedSchema.in.split(',').map (fl) ->
 					val = parseFloat(fl)
 					if isNaN val
-						throw new Error("#{parsedSchema.source} is not a float: in=#{parsedSchema.in}")
+						throw new Error("#{parsedSchema.source} is not a number: in=#{parsedSchema.in}")
 					return val
 			
-			floatValidator(parsedSchema)
+			numberValidator(parsedSchema)
 		
 		when 'function'
 			

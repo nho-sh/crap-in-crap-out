@@ -61,3 +61,54 @@ describe 'inspection-special', ->
 		assert_not_inspect('password', '1234567')
 		
 		return
+	
+	it 'inspect checks for bytesize', ->
+		
+		assert_inspect('bytesize', '1')
+		assert_inspect('bytesize', '1B')
+		assert_inspect('bytesize', '1.44MiB')
+		assert_inspect('bytesize', '10000 MB')
+		assert_inspect('bytesize?', null)
+		
+		bytesizes = [
+			'B',
+			'kB',
+			'kilobyte',
+			'MB',
+			'megabyte',
+			'GB',
+			'gigabyte',
+			'TB',
+			'terabyte',
+			'PB',
+			'petabyte',
+			'EB',
+			'exabyte',
+			'ZB',
+			'zettabyte',
+			'YB',
+			'yottabyte',
+			'KiB',
+			'kibibyte',
+			'MiB',
+			'mebibyte',
+			'GiB',
+			'gibibyte',
+			'TiB',
+			'tebibyte',
+			'PiB',
+			'pebibyte',
+			'EiB',
+			'exbibyte',
+			'ZiB',
+			'zebibyte',
+			'YiB',
+			'yobibyte',
+		]
+		bytesizes.forEach (bs) ->
+			assert_inspect('bytesize', '1' + bs)
+	
+		assert_not_inspect('bytesize', 'abc')
+		assert_not_inspect('bytesize', '')
+		
+		return

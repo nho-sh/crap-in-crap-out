@@ -17,8 +17,8 @@ describe 'guard', ->
 	
 	it 'guard works on direct checks', ->
 		
-		assert_guard 'float?', null, null
-		assert_guard 'float?', 123, 123
+		assert_guard 'number?', null, null
+		assert_guard 'number?', 123, 123
 	
 	it 'guard works on simple schemas', ->
 		
@@ -140,9 +140,9 @@ describe 'guard', ->
 	
 	it 'guard warns about bad field validators', ->
 		assert.throws ->
-			guard [a:'floatingpointnumber!'], [a:0.1]
+			guard [a:'numberingpointnumber!'], [a:0.1]
 		,
-			/Guard failed: \[0\].aError: Failed to parse schema floatingpointnumber!/
+			/Guard failed: \[0\].aError: Failed to parse schema numberingpointnumber!/
 	
 	it 'guard works on nested schemas', ->
 		

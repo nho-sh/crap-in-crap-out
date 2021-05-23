@@ -15,8 +15,8 @@ describe 'integration', ->
 	it 'guard works on a list of geopoints', ->
 		
 		schema = [
-			lat: 'float!'
-			lng: 'float!'
+			lat: 'number!'
+			lng: 'number!'
 		]
 		
 		value = [
@@ -42,8 +42,8 @@ describe 'integration', ->
 	it 'guard works on a list of alternating lat/lng', ->
 		
 		schema = [
-			lat: 'float!gte=-90&lte=90'
-			lng: 'float!gte=-180&lte=180'
+			lat: 'number!gte=-90&lte=90'
+			lng: 'number!gte=-180&lte=180'
 		]
 		
 		value = [
@@ -61,19 +61,19 @@ describe 'integration', ->
 		assert.throws ->
 			guard(schema, value)
 		,
-			/Guard failed: \[1\].lat:float!gte=-90&lte=90 -100 <= -90 evaluated false/
+			/Guard failed: \[1\].lat:number!gte=-90&lte=90 -100 <= -90 evaluated false/
 	
 	it 'guard works on complex object 1', ->
 		
 		schema =
-			a: 'float!'
+			a: 'number!'
 			b: [
 				a: 'integer!'
 				b: 'string'
 				'c?': 'boolean?'
 			,
-				lat: 'float!'
-				lng: 'float!'
+				lat: 'number!'
+				lng: 'number!'
 			]
 			c:
 				title: 'string?'
@@ -128,12 +128,12 @@ describe 'integration', ->
 				intArray: [ 'integer' ],
 				objArray: [
 					{
-						a: 'float!eq=-0.1',
+						a: 'number!eq=-0.1',
 						"b?": 'integer?'
 					}
 				],
 				string: 'string?gte=3',
-				positiveNumber: 'float!gt=0',
+				positiveNumber: 'number!gt=0',
 				"optionalArray?": [ 'boolean' ]
 				"optionalObject?": { a: 'boolean '}
 			}

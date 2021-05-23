@@ -38,7 +38,7 @@ const validationSchema =
 		objArray: [
 			{
 				// Required! number equal to 0.1
-				a: 'float!eq=-0.1',
+				a: 'number!eq=-0.1',
 				
 				// Optional? UUID
 				b: 'uuid?'
@@ -49,7 +49,7 @@ const validationSchema =
 		string: 'string?gte=3',
 		
 		// Required! number above 0
-		positiveNumber: 'float!gt=0',
+		positiveNumber: 'number!gt=0',
 		
 		// This array can be omitted with a trailing ? in the key
 		"optionalArray?": [ 'boolean' ],
@@ -89,7 +89,7 @@ A format that is well know and easy enough to read.
     - ... todo
 - `integer`
     - ... todo
-- `float`
+- `number`
     - ... todo
 - `function`
     - ... todo

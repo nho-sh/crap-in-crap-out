@@ -45,18 +45,18 @@ describe 'input-checking', ->
 	
 	it 'inspectForError check for duplicate values in a field validator', ->
 		assert.throws ->
-			inspectForError('float?gte=1&gte=1', null)
+			inspectForError('number?gte=1&gte=1', null)
 		,
 			/has this value multiple times/
 	
 	it 'inspectForError check for bad numbers in a field validtor', ->
 		assert.throws ->
-			inspectForError('float?gte=abc', null)
+			inspectForError('number?gte=abc', null)
 		,
 			/has a non-number/
 	
 	it 'inspectForError check bad validator types', ->
 		assert.throws ->
-			inspectForError('floatpointnumber?', null)
+			inspectForError('numberpointnumber?', null)
 		,
 			/Failed to parse schema/

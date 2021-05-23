@@ -136,42 +136,42 @@ describe 'inspection', ->
 		
 		return
 	
-	it 'inspect checks for floats', ->
+	it 'inspect checks for numbers', ->
 		
-		assert_inspect('float', 10.1)
-		assert_inspect('float', -10.1)
-		assert_inspect('float', 10)
-		assert_inspect('float', 0)
-		assert_inspect('float?', null)
-		assert_inspect('float!gte=-1&lte=1', -1)
-		assert_inspect('float!gte=-1&lte=1', 0.5)
-		assert_inspect('float!gte=-1&lte=1', 1)
-		assert_inspect('float!gt=-1&lt=1', -0.9)
-		assert_inspect('float!gt=-1&lt=1', 0)
-		assert_inspect('float!gt=-1&lt=1', 0.9)
-		assert_inspect('float!eq=1.1', 1.1)
-		assert_inspect('float!eq=0.0', 0)
-		assert_inspect('float!eq=-10.0', -10)
-		assert_inspect('float!in=0.1,10.2,-10.3', -10.3)
-		assert_inspect('float!eq=-10.3&in=0.1,10.2,-10.3', -10.3)
-		assert_inspect('float!', 10.1)
+		assert_inspect('number', 10.1)
+		assert_inspect('number', -10.1)
+		assert_inspect('number', 10)
+		assert_inspect('number', 0)
+		assert_inspect('number?', null)
+		assert_inspect('number!gte=-1&lte=1', -1)
+		assert_inspect('number!gte=-1&lte=1', 0.5)
+		assert_inspect('number!gte=-1&lte=1', 1)
+		assert_inspect('number!gt=-1&lt=1', -0.9)
+		assert_inspect('number!gt=-1&lt=1', 0)
+		assert_inspect('number!gt=-1&lt=1', 0.9)
+		assert_inspect('number!eq=1.1', 1.1)
+		assert_inspect('number!eq=0.0', 0)
+		assert_inspect('number!eq=-10.0', -10)
+		assert_inspect('number!in=0.1,10.2,-10.3', -10.3)
+		assert_inspect('number!eq=-10.3&in=0.1,10.2,-10.3', -10.3)
+		assert_inspect('number!', 10.1)
 		
-		assert_not_inspect('float!gte=-1&lte=1', -1.1)
-		assert_not_inspect('float!gte=-1&lte=1', 1.1)
-		assert_not_inspect('float!gt=-1&lt=1', -1.1)
-		assert_not_inspect('float!gt=-1&lt=1', 1.1)
-		assert_not_inspect('float!eq=1.01', '1.02')
-		assert_not_inspect('float!eq=1.01', 1.02)
-		assert_not_inspect('float!in=0.1,10.2,-10.3', -20)
-		assert_not_inspect('float', null)
-		assert_not_inspect('float!', null)
+		assert_not_inspect('number!gte=-1&lte=1', -1.1)
+		assert_not_inspect('number!gte=-1&lte=1', 1.1)
+		assert_not_inspect('number!gt=-1&lt=1', -1.1)
+		assert_not_inspect('number!gt=-1&lt=1', 1.1)
+		assert_not_inspect('number!eq=1.01', '1.02')
+		assert_not_inspect('number!eq=1.01', 1.02)
+		assert_not_inspect('number!in=0.1,10.2,-10.3', -20)
+		assert_not_inspect('number', null)
+		assert_not_inspect('number!', null)
 		
-		assert_error 'float!eq=', '12', /float!eq= is not a float: eq=/
-		assert_error 'float?eq=nonsense', /float\?eq=nonsense is not a float: eq=nonsense/
-		assert_error 'float!in=', /float!in= is not a float: in=/
+		assert_error 'number!eq=', '12', /number!eq= is not a number: eq=/
+		assert_error 'number?eq=nonsense', /number\?eq=nonsense is not a number: eq=nonsense/
+		assert_error 'number!in=', /number!in= is not a number: in=/
 		
 		for [0..1e4]
-			assert_not_inspect('float', notFloat())
+			assert_not_inspect('number', notFloat())
 		
 		return
 	

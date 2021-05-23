@@ -17,8 +17,8 @@ module.exports =
 		Math.floor(int) == int
 	
 	# istanbul ignore next
-	isFloat: (float) ->
-		typeof float == 'number' || float instanceof Number
+	isFloat: (number) ->
+		typeof number == 'number' || number instanceof Number
 	
 	isArray: (arr) ->
 		# simpler version of _.isArray
