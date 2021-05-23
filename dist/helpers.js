@@ -18,8 +18,8 @@
     },
     
     // istanbul ignore next
-    isFloat: function(float) {
-      return typeof float === 'number' || float instanceof Number;
+    isFloat: function(number) {
+      return typeof number === 'number' || number instanceof Number;
     },
     isArray: function(arr) {
       // simpler version of _.isArray
