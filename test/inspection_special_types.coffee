@@ -5,9 +5,11 @@ assert = require 'assert'
 { anything, notBoolean, notString, notInteger, notFloat, notFunction, notUuid } = require './_generators'
 
 assert_inspect = (schema, value) ->
-	assert !isString(inspectForError(schema, value)), "schema #{schema} should validate #{value}"
+	result = inspectForError(schema, value)
+	assert !isString(result), "schema #{schema} should validate #{value}\n  Reason: #{result}"
 assert_not_inspect = (schema, value) ->
-	assert isString(inspectForError(schema, value)), "schema #{schema} allows #{value}, but that is not okay"
+	result = inspectForError(schema, value)
+	assert isString(result), "schema #{schema} allows #{value}, but that is not okay\n  Reason: #{result}"
 assert_error = (schema, errRegexp) ->
 	assert.throws ->
 		inspectForError(schema, null)
@@ -41,6 +43,8 @@ describe 'inspection-special', ->
 		
 		return
 	
+	# TODO: JWT
+	
 	it 'inspect checks for hex-colors', ->
 		assert_inspect('hex-color', '#abcdef')
 		
@@ -59,6 +63,16 @@ describe 'inspection-special', ->
 		assert_inspect('password', 'abcDEF123=-asdf')
 		
 		assert_not_inspect('password', '1234567')
+		
+		return
+	
+	it 'inspect checks for timestamp-iso8601-ms', ->
+		assert_inspect('timestamp-iso8601-ms', '2021-11-03T20:16:33.000Z')
+		assert_inspect('timestamp-iso8601-ms', new Date().toISOString())
+		
+		assert_not_inspect('timestamp-iso8601-ms', '2021-11-03T20:16:33')
+		assert_not_inspect('timestamp-iso8601-ms', '2021-11-03T20:16:33+00:00')
+		assert_not_inspect('timestamp-iso8601-ms', '2021-11-03T20:16:33Z')
 		
 		return
 	
