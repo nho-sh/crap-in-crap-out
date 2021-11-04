@@ -79,7 +79,7 @@ schemaParser = (schema) ->
 	else if type == 'password'
 		return { source: schema, type: 'string',    optional, gte: 8 }
 	else if type == 'timestamp-iso8601-ms'
-		return { source: schema, type: 'string',    optional, len: 20, regex: /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ$/ }
+		return { source: schema, type: 'string',    optional, len: 24, regex: /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.[0-9]{3}Z$/ }
 	else if type == 'bytesize'
 		return { source: schema, type: 'string',    optional, regex:
 			new RegExp([
