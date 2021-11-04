@@ -8,7 +8,7 @@ querystring = require 'querystring'
 	badSchemaNumber
 } = require './errors'
 
-parseRegex = /^(boolean|string|integer|number|uuid|function|email|hex-color|jwt|password|bytesize)([!?]|$)(.*)/
+parseRegex = /^(boolean|string|integer|number|uuid|function|email|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/
 schemaParser = (schema) ->
 	if !isString(schema)
 		throw new Error notAGoodSchema
@@ -60,7 +60,7 @@ schemaParser = (schema) ->
 		return { source: schema, type: 'integer',   optional, gte, lte, gt, lt, eq, in: ins }
 	
 	else if type == 'number'
-		return { source: schema, type: 'number',     optional, gte, lte, gt, lt, eq, in: ins }
+		return { source: schema, type: 'number',    optional, gte, lte, gt, lt, eq, in: ins }
 	
 	else if type == 'function'
 		return { source: schema, type: 'function',  optional }
@@ -78,6 +78,8 @@ schemaParser = (schema) ->
 		return { source: schema, type: 'string',    optional, regex: /^#[A-Fa-f0-9]{6}$/ }
 	else if type == 'password'
 		return { source: schema, type: 'string',    optional, gte: 8 }
+	else if type == 'timestamp-iso8601-ms'
+		return { source: schema, type: 'string',    optional, len: 20, regex: /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ$/ }
 	else if type == 'bytesize'
 		return { source: schema, type: 'string',    optional, regex:
 			new RegExp([
