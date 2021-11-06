@@ -37,7 +37,7 @@ const validationSchema =
 		intArray: [ 'integer' ],
 		objArray: [
 			{
-				// Required! number equal to 0.1
+				// Required! number equal to -0.1
 				a: 'number!eq=-0.1',
 				
 				// Optional? UUID
@@ -55,11 +55,11 @@ const validationSchema =
 		"optionalArray?": [ 'boolean' ],
 		
 		// This object can be omitted with a trailing ? in the key
-		"optionalObject?": { a: 'boolean' } 
+		"optionalObject?": { a: 'boolean' }
 	}
 	
 	// If you define a 2nd array element
-	// The array element valiation will alternate
+	// The array element validation will alternate
 	// between them.
 	// { 2nd position elements look like this }
 	
@@ -82,7 +82,7 @@ A format that is well know and easy enough to read.
 ## Validation : Basic Types
 
 - `...` -> Allow anything that is not nill
-    - `...` Allow anything, even null/undefined
+    - `...?` Allow anything, even null/undefined
 - `boolean` -> Allow true/false
     - `boolean?` Allow true/false/null/undefined
 - `string`
@@ -106,6 +106,9 @@ Some common special types are also supported out of the box
     - ... todo
 - `hex-color`
     - ... todo
+- `timestamp-iso8601-ms`
+    - The timestamp defined by ISO8601, but including .000 milliseconds
+    - Uses the Z suffix, not +00:00
 - `password`
     - ... todo
 
