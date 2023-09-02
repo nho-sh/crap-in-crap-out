@@ -19,7 +19,7 @@ const assert_not_inspect = function(schema, value) {
 };
 
 const assert_error = function(schema, errRegexp) {
-  return assert.throws(() => {
+  assert.throws(() => {
     return inspectForError(schema, null);
   }, errRegexp);
 };
@@ -48,13 +48,19 @@ describe('inspection-special', () => {
     assert_not_inspect('email!', null);
   });
   
-  // TODO: JWT
   it('inspect checks for hex-colors', () => {
     assert_inspect('hex-color', '#abcdef');
     assert_not_inspect('hex-color!', 'b@a.com');
     assert_not_inspect('hex-color!', 123);
     assert_not_inspect('hex-color!', '#abcDE');
     assert_not_inspect('hex-color!', '#abcDEff');
+  });
+  it('inspect checks for jwt', () => {
+    assert_inspect('jwt', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+    assert_not_inspect('jwt!', 'b@a.com');
+    assert_not_inspect('jwt!', 123);
+    assert_not_inspect('jwt!', '#abcDE');
+    assert_not_inspect('jwt!', '#abcDEff');
   });
   it('inspect checks for passwords', () => {
     assert_inspect('password', '12345678');

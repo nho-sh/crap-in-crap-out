@@ -10,12 +10,6 @@ module.exports = {
   },
   
   // istanbul ignore next
-  isInteger: Number.isInteger || function (int) {
-    // istanbul ignore next
-    return typeof int === 'number' && isFinite(int) && Math.floor(int) === int;
-  },
-  
-  // istanbul ignore next
   isFloat: (number) => {
     return typeof number === 'number' || number instanceof Number;
   },

@@ -28,23 +28,23 @@ describe('input-checking', () => {
   it('inspectForError only accepts strings as schema', () => {
     const badStuff = [null, void 0, [], {}, 10.0, 10, false];
     return badStuff.forEach(function(bs) {
-      return assert.throws(() => {
+      assert.throws(() => {
         return inspectForError(bs, null);
       }, new RegExp(notAGoodSchema));
     });
   });
   it('inspectForError check for duplicate values in a field validator', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return inspectForError('number?gte=1&gte=1', null);
     }, /has this value multiple times/);
   });
   it('inspectForError check for bad numbers in a field validtor', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return inspectForError('number?gte=abc', null);
     }, /has a non-number/);
   });
-  return it('inspectForError check bad validator types', () => {
-    return assert.throws(() => {
+  it('inspectForError check bad validator types', () => {
+    assert.throws(() => {
       return inspectForError('numberpointnumber?', null);
     }, /Failed to parse schema/);
   });

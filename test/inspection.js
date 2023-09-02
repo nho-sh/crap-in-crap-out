@@ -15,7 +15,7 @@ const assert_not_inspect = function(schema, value) {
 };
 
 const assert_error = function(schema, errRegexp) {
-  return assert.throws(function() {
+  assert.throws(function() {
     return inspectForError(schema, null);
   }, errRegexp);
 };
@@ -172,7 +172,7 @@ describe('inspection', function() {
       assert_not_inspect('function', notFunction());
     }
   });
-  return it('inspect checks for uuid', function() {
+  it('inspect checks for uuid', function() {
     assert_inspect('uuid', '00000000-0000-0000-0000-000000000000');
     assert_inspect('uuid', '58c29992-85f6-11ea-bc55-0242ac130003');
     assert_inspect('uuid', '6d7c4c8e-85f6-11ea-bc55-0242ac130003');

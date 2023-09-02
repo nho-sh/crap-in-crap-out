@@ -2,10 +2,8 @@ const assert = require('assert');
 
 const { guard } = require('../src');
 
-const { notString, notInteger } = require('./_generators');
-
 const assert_guard = function(schema, value, output) {
-  return assert.deepStrictEqual(guard(schema, value), output);
+  assert.deepStrictEqual(guard(schema, value), output);
 };
 
 // assert_not_guard = (schema, value, errMsg) ->
@@ -67,7 +65,7 @@ describe('integration', () => {
         extra: 'exclude'
       }
     ];
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard(schema, value);
     }, /Guard failed: \[1\].lat:number!gte=-90&lte=90 -100 <= -90 evaluated false/);
   });
@@ -145,7 +143,7 @@ describe('integration', () => {
     };
     assert_guard(schema, value, output);
   });
-  return it('works on the README example', () => {
+  it('works on the README example', () => {
     var output, value;
     const schema = [
       {

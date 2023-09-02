@@ -6,11 +6,11 @@ const { guard } = require('../src');
 const { notString, notInteger } = require('./_generators');
 
 const assert_guard = function(schema, value, output) {
-  return assert.deepStrictEqual(guard(schema, value), output);
+  assert.deepStrictEqual(guard(schema, value), output);
 };
 
 const assert_not_guard = function(schema, value) {
-  return assert.notDeepStrictEqual(guard(schema, value), `guard ${JSON.stringify(schema)} has unexpected same output ${JSON.stringify(output)}`);
+  assert.notDeepStrictEqual(guard(schema, value), `guard ${JSON.stringify(schema)} has unexpected same output ${JSON.stringify(output)}`);
 };
 
 describe('guard', () => {
@@ -49,10 +49,10 @@ describe('guard', () => {
     
     // Because of the scope binding on functions,
     // we have to make a special variant of asserting
-    return assert.deepStrictEqual(guarded, output);
+    assert.deepStrictEqual(guarded, output);
   });
   it('guard checks for invalid keys', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard({
         a: 'string',
         b: 'integer'
@@ -61,6 +61,15 @@ describe('guard', () => {
         b: 'badvalue'
       });
     }, /Guard failed: b:integer Not an integer: badvalue/);
+  });
+  it('guard checks for invalid types', () => {
+    assert.throws(() => {
+      return guard({
+        a: 'strAng',
+      }, {
+        a: 'abc',
+      });
+    }, /Error: Guard failed: aError: Failed to parse schema strAng/);
   });
   it('guard allows null when its optional', () => {
     return assert_guard({
@@ -115,12 +124,12 @@ describe('guard', () => {
     ]);
   });
   it('guard works on arrays', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard(['string', 'integer'], ['abc', 10, 'abc', 1.23]);
     }, /Guard failed: \[3\]:integer Not an integer: 1.23/);
   });
   it('guard warns about missing schemas', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard([], [
         {
           a: 1
@@ -129,7 +138,7 @@ describe('guard', () => {
     }, /No schema\(s\) defined in the array/);
   });
   it('guard warns about array length mismatches', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard([
         {
           a: 1
@@ -151,7 +160,7 @@ describe('guard', () => {
     }, /is not a multiple of the schema arraylength/);
   });
   it('guard warns about missing array goods', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard([
         {
           a: 1
@@ -160,7 +169,7 @@ describe('guard', () => {
     }, /Value is not an array/);
   });
   it('guard warns about bad field validators', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard([
         {
           a: 'numberingpointnumber!'
@@ -173,7 +182,7 @@ describe('guard', () => {
     }, /Guard failed: \[0\].aError: Failed to parse schema numberingpointnumber!/);
   });
   it('guard works on nested schemas', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard({
         a: 'string',
         b: {
@@ -190,7 +199,7 @@ describe('guard', () => {
     }, /Guard failed: b.d:integer Not an integer: badvalue/);
   });
   it('guard checks if a nested object is present', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard({
         a: 'string',
         b: {
@@ -204,7 +213,7 @@ describe('guard', () => {
     }, /Guard failed: b:Value is not an object/);
   });
   it('guard checks if a nested array is present', () => {
-    return assert.throws(() => {
+    assert.throws(() => {
       return guard({
         a: 'string',
         b: [
@@ -245,8 +254,8 @@ describe('guard', () => {
       }
     });
   });
-  return it('guard checks for missing object value', () => {
-    return assert.throws(() => {
+  it('guard checks for missing object value', () => {
+    assert.throws(() => {
       return guard({
         a: 'string',
         'b?': {

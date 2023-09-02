@@ -7,7 +7,7 @@
     "pre-deploy": "npm run test && npm run lint",
     "debug": "mocha --nodejs --inspect-brk ./test/_entry.js",
     "package": "rm *.tgz && npm pack",
-    "test": "nyc --lines=99 --check-coverage=true --reporter=html --reporter=text mocha ./test/_entry.js",
+    "test": "nyc --lines=100 --check-coverage=true --reporter=html --reporter=text mocha ./test/_entry.js",
     "lint": "eslint 'src/*.js' -c ./.eslintrc"
   },
   "keywords": [

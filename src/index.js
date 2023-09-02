@@ -53,6 +53,8 @@ const schemaParser = function(schema) {
   eq = query.eq;
   ins = query.in;
   regex = !query.regex ? null : (result = query.regex.trim(), result[0] !== '^' ? prepend = '^' : void 0, result[result.length - 1] !== '$' ? append = '$' : void 0, new RegExp((prepend || '') + result + (append || '')));
+
+  // istanbul ignore else
   if (type === 'boolean') {
     return {
       source: schema,
@@ -178,6 +180,11 @@ const schemaParser = function(schema) {
       ].join(''))
     };
   }
+  else {
+    // NOTE: Regex above prevents getting to this point
+    // But its here in case its overlooked in dev
+    throw `Unknown type in schema ${type}, adjust 'parseRegex'`;
+  }
 };
 
 const anythingValidator = function(parsedSchema) {
@@ -264,7 +271,7 @@ const integerValidator = function(parsedSchema) {
       }
       return "null was supplied, but not allowed";
     }
-    if (isInteger(good)) {
+    if (Number.isInteger(good)) {
       if (isDefined(parsedSchema.eq) && good !== parsedSchema.eq) {
         return `Not the expected value ${parsedSchema.eq}`;
       }
@@ -453,9 +460,9 @@ const inspectForError = function(schema, good) {
 };
 
 const guard = function(schema, goods, parentGoods) {
-  var err, good, goodsCount, guarded, hasError, i, idx, j, k, key, keyLen, l, len1, len2, nil, objSchema, optional, ref, ref1, result, schemaCount, val;
+  var err, good, guarded, optional;
   if (isString(schema)) {
-    hasError = inspectForError(schema, goods);
+    const hasError = inspectForError(schema, goods);
     if (hasError) {
       throw `:${schema} ` + hasError;
     } else {
@@ -472,17 +479,18 @@ const guard = function(schema, goods, parentGoods) {
   }
   if (isArray(schema)) {
     if (!isArray(goods)) {
-      throw ":Value is not an array";
+      throw `:Value is not an array, but a ${typeof goods}`;
     }
-    result = [];
-    schemaCount = schema.length;
+    const result = [];
+    const schemaCount = schema.length;
     if (schemaCount === 0) {
       throw " No schema(s) defined in the array";
     }
     if (schemaCount === 1) {
       // Typical scenario, just go through it as fast as possible
       schema = schema[0];
-      for (idx = j = 0, len1 = goods.length; j < len1; idx = ++j) {
+      const goodsLength = goods.length;
+      for (let idx = 0; idx < goodsLength; idx++) {
         good = goods[idx];
         try {
           guarded = guard(schema, good, goods);
@@ -493,16 +501,16 @@ const guard = function(schema, goods, parentGoods) {
         result.push(guarded);
       }
     } else {
-      goodsCount = goods.length;
+      const goodsCount = goods.length;
       
       // Abort when the number of goods are not a multiple of the schema count
       if ((goodsCount % schemaCount) !== 0) {
         throw ` Values array length (${goodsCount}) is not a multiple of the schema arraylength (${schemaCount})`;
       }
-      ref = schemaCount;
-      for ((ref > 0 ? (idx = k = 0, len2 = goods.length) : idx = k = goods.length - 1); ref > 0 ? k < len2 : k >= 0; idx = k += ref) {
+      const goodsLength = goods.length;
+      for (let idx = 0; idx < goodsLength; idx += schemaCount) {
         good = goods[idx];
-        for (i = l = 0, ref1 = schemaCount - 1; (0 <= ref1 ? l <= ref1 : l >= ref1); i = 0 <= ref1 ? ++l : --l) {
+        for (let i = 0; i <= schemaCount - 1; i++) {
           good = goods[idx + i];
           try {
             guarded = guard(schema[i], good, goods);
@@ -523,19 +531,19 @@ const guard = function(schema, goods, parentGoods) {
     // Also handled bad input
     // luckily the for-of construct ignores values such as:
     // undefined/null/numbers/etc
-    result = {};
-    for (key in schema) {
-      if (!Object.hasOwnProperty.call(schema, key)) continue;
-      objSchema = schema[key];
+    const result = {};
+    for (let key of Object.keys(schema)) {
+      const objSchema = schema[key];
       try {
-        keyLen = key.length;
+        const keyLen = key.length;
+        // Check if the object key ends with a '?'
+        // thus making it optional instead of required
         optional = key[keyLen - 1] === '?';
         if (optional) {
-          key = key.substr(0, keyLen - 1);
+          key = key.substring(0, keyLen - 1);
         }
-        val = goods[key];
-        nil = val === null || val === void 0;
-        if (nil && optional) {
+        const val = goods[key];
+        if (val == null && optional) {
           guarded = null;
         } else {
           guarded = guard(objSchema, val, goods);
@@ -603,7 +611,7 @@ module.exports = {
       err = error;
       finalError = err;
       if (finalError[0] === '.') {
-        finalError = finalError.substr(1);
+        finalError = finalError.substring(1);
       }
       throw new Error(`Guard failed: ${finalError}`);
     }

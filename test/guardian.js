@@ -20,7 +20,7 @@ describe('guardian', function() {
     assert.throws(function() {
       return guardian({}, {});
     }, /Guardian input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined./);
-    return assert.throws(function() {
+    assert.throws(function() {
       return guardian([{}], {})({});
     }, new RegExp(notAFunction));
   });
@@ -35,7 +35,7 @@ describe('guardian', function() {
   it('guardian works on input schemas only', function() {
     return guardian([{}])(function() {})();
   });
-  return it('guardian properly validates inputs and outputs', function() {
+  it('guardian properly validates inputs and outputs', function() {
     var dinlas, elevenPercent;
     dinlas = guardian(['integer', 'integer'], 'integer');
     elevenPercent = dinlas(function(arg1, arg2) {
@@ -50,7 +50,7 @@ describe('guardian', function() {
     }, /:integer Not an integer/);
     
     // Check for proper input validation
-    return assert.throws(function() {
+    assert.throws(function() {
       return elevenPercent(10, 1.1);
     }, /Guarding input failed \[1\]:integer Not an integer: 1.1/);
   });
