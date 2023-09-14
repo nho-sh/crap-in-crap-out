@@ -1,6 +1,6 @@
-# Crap In Crap Out
+# Crap In === Crap Out
 
-This is a strict JSON validator with a very simple, wysiwyg, human friendly schema.
+This is a **strict JSON validator** with a very simple, wysiwyg, human friendly schema.
 
 It's contrary to the defensive programming paradigm, which aims to be flexible on input.
 Instead, by demanding strict input, calling code has to adhere 100% to the contract,
@@ -20,8 +20,8 @@ is mirrored by the exact same level of validation level.
 		],
 		"string": "abc",
 		"positiveNumber": 10.123,
-		"optionalArray": null,
-		"optionalObject": null
+		"optionalArray?": null,
+		"optionalObject?": null
 	}
 ]
 
@@ -51,10 +51,10 @@ const validationSchema =
 		// Required! number above 0
 		positiveNumber: 'number!gt=0',
 		
-		// This array can be omitted with a trailing ? in the key
+		// A trailing ? on a object key, means the value can be null
 		"optionalArray?": [ 'boolean' ],
 		
-		// This object can be omitted with a trailing ? in the key
+		// A trailing ? on a object key, means the value can be null
 		"optionalObject?": { a: 'boolean' }
 	}
 	
