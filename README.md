@@ -11,8 +11,10 @@ including the arrays and objects. Every level of the real JSON data,
 is mirrored by the exact same level of validation level.
 
 ```js
-// data.json
-[
+const { guard } = require('crap-in-crap-out');
+
+// Let's validate this array with one object:
+const data = [
 	{
 		"intArray": [ 1, 2 ],
 		"objArray": [
@@ -20,18 +22,16 @@ is mirrored by the exact same level of validation level.
 		],
 		"string": "abc",
 		"positiveNumber": 10.123,
-		"optionalArray?": null,
-		"optionalObject?": null
+		"optionalArray": null,
+		"optionalObject": null,
+
+		"extra_field": "will be filtered out"
 	}
-]
+];
 
-// example.js
-const data = require('./data.json');
-const { guard } = require('crap-in-crap-out');
-
-const validationSchema =
-// Top level, we want an array
-[
+// This is the schema, it matches the exact same array/object structure
+// and just plain JSON
+const validationSchema = [
 	// Every element in the array adheres to this object
 	{
 		intArray: [ 'integer' ],
@@ -55,7 +55,7 @@ const validationSchema =
 		"optionalArray?": [ 'boolean' ],
 		
 		// A trailing ? on a object key, means the value can be null
-		"optionalObject?": { a: 'boolean' }
+		"optionalObject?": { a: 'boolean' },
 	}
 	
 	// If you define a 2nd array element
@@ -65,10 +65,14 @@ const validationSchema =
 	
 	// Every 3rd could a number if you like
 	// 'string?'
-]
+];
 
 // Throws error if it's not validated
+// If valid, returns a deep clone with the fields that match the schema
 const validatedData = guard(validationSchema, data);
+
+// If valid, the result is JSON data without any unexpected input
+// From the input data, the field 'extra_field' will be gone
 ```
 
 ## Validation Definition
