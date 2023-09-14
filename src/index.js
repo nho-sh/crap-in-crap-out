@@ -7,7 +7,7 @@ const { notAFunction, notAGoodSchema, schemaDuplicateValues, badSchemaNumber } =
 const parseRegex = /^(boolean|string|integer|number|uuid|function|email|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
 
 const schemaParser = function(schema) {
-  var append, eq, getNum, gt, gte, ins, len, lt, lte, match, optional, prepend, query, regex, result, type;
+  var append, prepend, regex, result;
   if (!isString(schema)) {
     throw new Error(notAGoodSchema);
   }
@@ -18,13 +18,13 @@ const schemaParser = function(schema) {
       optional: schema.indexOf('?') === 3
     };
   }
-  match = parseRegex.exec(schema);
+  const match = parseRegex.exec(schema);
   if (!match) {
     throw new Error(`Failed to parse schema ${schema}`);
   }
-  type = match[1];
-  optional = match[2] === '?';
-  query = querystring.parse(match[3]);
+  const type = match[1];
+  const optional = match[2] === '?';
+  const query = querystring.parse(match[3]);
   
   // Check if any key in the schema is defined double: gte=1&gte=0
   Object.values(query).forEach(function(val) {
@@ -32,7 +32,7 @@ const schemaParser = function(schema) {
       throw new Error(schemaDuplicateValues(schema, val));
     }
   });
-  getNum = function(str) {
+  const getNum = function(str) {
     var number;
     if (str === void 0) {
       return null;
@@ -45,13 +45,14 @@ const schemaParser = function(schema) {
   };
   
   // Parse out some numbers and check if they make sense
-  gte = getNum(query.gte);
-  gt = getNum(query.gt);
-  len = getNum(query.len);
-  lte = getNum(query.lte);
-  lt = getNum(query.lt);
-  eq = query.eq;
-  ins = query.in;
+  const gte = getNum(query.gte);
+  const gt = getNum(query.gt);
+  const len = getNum(query.len);
+  const lte = getNum(query.lte);
+  const lt = getNum(query.lt);
+  const eq = query.eq;
+  const ins = query.in;
+
   regex = !query.regex ? null : (result = query.regex.trim(), result[0] !== '^' ? prepend = '^' : void 0, result[result.length - 1] !== '$' ? append = '$' : void 0, new RegExp((prepend || '') + result + (append || '')));
 
   // istanbul ignore else
@@ -474,7 +475,7 @@ const guard = function(schema, goods, parentGoods) {
         // Therefor, when we copy over functions by reference, we need to correct their scope
         return goods.bind(parentGoods);
       }
-      return goods || null;
+      return goods ?? null;
     }
   }
   if (isArray(schema)) {

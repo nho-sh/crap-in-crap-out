@@ -15,11 +15,11 @@ const assert_not_guard = function(schema, value) {
 
 describe('guard', () => {
   it('guard works on empty schemas', () => {
-    return assert_guard({}, {}, {});
+    assert_guard({}, {}, {});
   });
   it('guard works on direct checks', () => {
     assert_guard('number?', null, null);
-    return assert_guard('number?', 123, 123);
+    assert_guard('number?', 123, 123);
   });
   it('guard works on simple schemas', () => {
     let fnc = () => {};
@@ -29,22 +29,27 @@ describe('guard', () => {
       b: 'integer',
       c: '...',
       'd?': '...?',
-      e: '...!'
+      e: '...!',
+      zero: 'integer!gte=0&lte=2'
     };
     const value = {
       a: 'abc',
       b: 10,
       c: fnc,
       d: null,
-      e: 12
+      e: 12,
+      zero: 0,
     };
+
     const guarded = guard(schema, value);
+
     const output = {
       a: 'abc',
       b: 10,
       c: guarded.c,
       d: null,
-      e: 12
+      e: 12,
+      zero: 0,
     };
     
     // Because of the scope binding on functions,
@@ -72,7 +77,7 @@ describe('guard', () => {
     }, /Error: Guard failed: aError: Failed to parse schema strAng/);
   });
   it('guard allows null when its optional', () => {
-    return assert_guard({
+    assert_guard({
       a: 'string',
       'b?': 'integer',
       c: 'integer?'
@@ -88,7 +93,7 @@ describe('guard', () => {
   });
   it('guard works on arrays', () => {
     assert_guard(['integer'], [], []);
-    return assert_guard([
+    assert_guard([
       'string',
       'integer',
       {

@@ -7,16 +7,16 @@ const { inspectForError } = require('../src');
 const { anything, notBoolean, notString, notInteger, notFloat, notFunction, notUuid } = require('./_generators');
 
 const assert_inspect = function(schema, value) {
-  return assert(!isString(inspectForError(schema, value)), `schema ${schema} should validate ${value}`);
+  assert(!isString(inspectForError(schema, value)), `schema ${schema} should validate ${value}`);
 };
 
 const assert_not_inspect = function(schema, value) {
-  return assert(isString(inspectForError(schema, value)), `schema ${schema} allows ${value}, but that is not okay`);
+  assert(isString(inspectForError(schema, value)), `schema ${schema} allows ${value}, but that is not okay`);
 };
 
 const assert_error = function(schema, errRegexp) {
   assert.throws(function() {
-    return inspectForError(schema, null);
+    inspectForError(schema, null);
   }, errRegexp);
 };
 
@@ -79,6 +79,7 @@ describe('inspection', function() {
     assert_not_inspect('string!eq=abc', 'def');
     assert_not_inspect('string!eq=abc', '');
     assert_not_inspect('string!in=abc,def', 'a');
+    assert_not_inspect('string!in=abc,def', 'abc,');
     assert_not_inspect('string!in=abc,def', '');
     assert_not_inspect('string!in=', 'abc');
     assert_not_inspect('string!regex=abc', 'def');
