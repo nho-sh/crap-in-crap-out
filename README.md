@@ -15,56 +15,54 @@ const { guard } = require('crap-in-crap-out');
 
 // Let's validate this array with one object:
 const data = [
-	{
-		"intArray": [ 1, 2 ],
-		"objArray": [
-			{ "a": -0.1, "b": null }
-		],
-		"string": "abc",
-		"positiveNumber": 10.123,
-		"optionalArray": null,
-		"optionalObject": null,
+  {
+    oneAndTwo: [1, 2],
+    objArray: [{ a: -0.1, b: null }],
+    string: 'abc',
+    positiveNumber: 10.123,
+    optionalArray: null,
+    optionalObject: null,
 
-		"extra_field": "will be filtered out"
-	}
+    extra_field: 'will be filtered out',
+  },
 ];
 
 // This is the schema, it matches the exact same array/object structure
 // and just plain JSON
 const validationSchema = [
-	// Every element in the array adheres to this object
-	{
-		intArray: [ 'integer' ],
-		objArray: [
-			{
-				// Required! number equal to -0.1
-				a: 'number!eq=-0.1',
-				
-				// Optional? UUID
-				b: 'uuid?'
-			}
-		],
-		
-		// Optional? string with a minimum length of 3
-		string: 'string?gte=3',
-		
-		// Required! number above 0
-		positiveNumber: 'number!gt=0',
-		
-		// A trailing ? on a object key, means the value can be null
-		"optionalArray?": [ 'boolean' ],
-		
-		// A trailing ? on a object key, means the value can be null
-		"optionalObject?": { a: 'boolean' },
-	}
-	
-	// If you define a 2nd array element
-	// The array element validation will alternate
-	// between them.
-	// { 2nd position elements look like this }
-	
-	// Every 3rd could a number if you like
-	// 'string?'
+  // Every element in the array adheres to this object
+  {
+    oneAndTwo: ['integer'],
+    objArray: [
+      {
+        // Exclamation makes it required
+        // After ? or ! you can constrain the value
+        a: 'number!eq=-0.1',
+        // Question mark makes it optional
+        b: 'uuid?',
+      },
+    ],
+
+    // Optional? string with a minimum length of 3
+    string: 'string?gte=3',
+
+    // Required! number above 0
+    positiveNumber: 'number!gt=0',
+
+    // A trailing ? on a object key, means the value can be null
+    'optionalArray?': ['boolean'],
+
+    // A trailing ? on a object key, means the value can be null
+    'optionalObject?': { a: 'boolean' },
+  },
+
+  // If you define a 2nd array element
+  // The array element validation will alternate
+  // between them.
+  // { 2nd position elements look like this }
+
+  // Every 3rd could a number if you like
+  // 'string?'
 ];
 
 // Throws error if it's not validated
@@ -86,35 +84,35 @@ A format that is well know and easy enough to read.
 ## Validation : Basic Types
 
 - `...` -> Allow anything that is not nill
-    - `...?` Allow anything, even null/undefined
+  - `...?` Allow anything, even null/undefined
 - `boolean` -> Allow true/false
-    - `boolean?` Allow true/false/null/undefined
+  - `boolean?` Allow true/false/null/undefined
 - `string`
-    - ... todo
+  - ... todo
 - `integer`
-    - ... todo
+  - ... todo
 - `number`
-    - ... todo
+  - ... todo
 - `function`
-    - ... todo
+  - ... todo
 
 ## Validation : Special Types
 
 Some common special types are also supported out of the box
 
 - `uuid` (no specific version checking, like v1, v4, ...)
-    - ... todo
+  - ... todo
 - `email`
-    - ... todo
+  - ... todo
 - `jwt`
-    - ... todo
+  - ... todo
 - `hex-color`
-    - ... todo
+  - ... todo
 - `timestamp-iso8601-ms`
-    - The timestamp defined by ISO8601, but including .000 milliseconds
-    - Uses the Z suffix, not +00:00
+  - The timestamp defined by ISO8601, but including .000 milliseconds
+  - Uses the Z suffix, not +00:00
 - `password`
-    - ... todo
+  - ... todo
 
 ## Performance
 

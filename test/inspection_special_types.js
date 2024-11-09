@@ -4,24 +4,22 @@ const { isString } = require('../src/helpers');
 
 const { inspectForError } = require('../src');
 
-const { anything, notBoolean, notString, notInteger, notFloat, notFunction, notUuid } = require('./_generators');
-
-const assert_inspect = function(schema, value) {
+const assert_inspect = function (schema, value) {
   var result;
   result = inspectForError(schema, value);
-  return assert(!isString(result), `schema ${schema} should validate ${value}\n  Reason: ${result}`);
+  return assert(
+    !isString(result),
+    `schema ${schema} should validate ${value}\n  Reason: ${result}`
+  );
 };
 
-const assert_not_inspect = function(schema, value) {
+const assert_not_inspect = function (schema, value) {
   var result;
   result = inspectForError(schema, value);
-  return assert(isString(result), `schema ${schema} allows ${value}, but that is not okay\n  Reason: ${result}`);
-};
-
-const assert_error = function(schema, errRegexp) {
-  assert.throws(() => {
-    return inspectForError(schema, null);
-  }, errRegexp);
+  return assert(
+    isString(result),
+    `schema ${schema} allows ${value}, but that is not okay\n  Reason: ${result}`
+  );
 };
 
 describe('inspection-special', () => {
@@ -47,7 +45,7 @@ describe('inspection-special', () => {
     assert_not_inspect('email', null);
     assert_not_inspect('email!', null);
   });
-  
+
   it('inspect checks for hex-colors', () => {
     assert_inspect('hex-color', '#abcdef');
     assert_not_inspect('hex-color!', 'b@a.com');
@@ -56,7 +54,10 @@ describe('inspection-special', () => {
     assert_not_inspect('hex-color!', '#abcDEff');
   });
   it('inspect checks for jwt', () => {
-    assert_inspect('jwt', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+    assert_inspect(
+      'jwt',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+    );
     assert_not_inspect('jwt!', 'b@a.com');
     assert_not_inspect('jwt!', 123);
     assert_not_inspect('jwt!', '#abcDE');
@@ -116,9 +117,9 @@ describe('inspection-special', () => {
       'ZiB',
       'zebibyte',
       'YiB',
-      'yobibyte'
+      'yobibyte',
     ];
-    bytesizes.forEach(function(bs) {
+    bytesizes.forEach(function (bs) {
       assert_inspect('bytesize', '1' + bs);
     });
     assert_not_inspect('bytesize', 'abc');

@@ -4,24 +4,38 @@ const { isString } = require('../src/helpers');
 
 const { inspectForError } = require('../src');
 
-const { anything, notBoolean, notString, notInteger, notFloat, notFunction, notUuid } = require('./_generators');
+const {
+  anything,
+  notBoolean,
+  notString,
+  notInteger,
+  notFloat,
+  notFunction,
+  notUuid,
+} = require('./_generators');
 
-const assert_inspect = function(schema, value) {
-  assert(!isString(inspectForError(schema, value)), `schema ${schema} should validate ${value}`);
+const assert_inspect = function (schema, value) {
+  assert(
+    !isString(inspectForError(schema, value)),
+    `schema ${schema} should validate ${value}`
+  );
 };
 
-const assert_not_inspect = function(schema, value) {
-  assert(isString(inspectForError(schema, value)), `schema ${schema} allows ${value}, but that is not okay`);
+const assert_not_inspect = function (schema, value) {
+  assert(
+    isString(inspectForError(schema, value)),
+    `schema ${schema} allows ${value}, but that is not okay`
+  );
 };
 
-const assert_error = function(schema, errRegexp) {
-  assert.throws(function() {
+const assert_error = function (schema, errRegexp) {
+  assert.throws(function () {
     inspectForError(schema, null);
   }, errRegexp);
 };
 
-describe('inspection', function() {
-  it('inspect checks for anything', function() {
+describe('inspection', function () {
+  it('inspect checks for anything', function () {
     assert_inspect('...', true);
     assert_inspect('...', false);
     assert_inspect('...', false); // Repeated to hit cache
@@ -34,7 +48,7 @@ describe('inspection', function() {
       assert('...', anything());
     }
   });
-  it('inspect checks for boolean', function() {
+  it('inspect checks for boolean', function () {
     assert_inspect('boolean', true);
     assert_inspect('boolean', false);
     assert_inspect('boolean', false); // Repeated to hit cache
@@ -49,9 +63,12 @@ describe('inspection', function() {
     for (let i = 0; i <= 10000; i++) {
       assert_not_inspect('boolean', notBoolean());
     }
-    assert_error('boolean?eq=nonsense', /boolean\?eq=nonsense has to be eq=true or eq=false/);
+    assert_error(
+      'boolean?eq=nonsense',
+      /boolean\?eq=nonsense has to be eq=true or eq=false/
+    );
   });
-  it('inspect checks for strings', function() {
+  it('inspect checks for strings', function () {
     assert_inspect('string', 'abc');
     assert_inspect('string', 'abc'); // Repeated to hit cache
     assert_inspect('string?', null);
@@ -90,7 +107,7 @@ describe('inspection', function() {
       assert_not_inspect('string', notString());
     }
   });
-  it('inspect checks for integers', function() {
+  it('inspect checks for integers', function () {
     assert_inspect('integer', 10);
     assert_inspect('integer', -10);
     assert_inspect('integer', 0);
@@ -118,13 +135,16 @@ describe('inspection', function() {
     assert_not_inspect('integer', null);
     assert_not_inspect('integer!', null);
     assert_error('integer!eq=', /integer!eq= is not an integer: eq=/);
-    assert_error('integer?eq=nonsense', /integer\?eq=nonsense is not an integer: eq=nonsense/);
+    assert_error(
+      'integer?eq=nonsense',
+      /integer\?eq=nonsense is not an integer: eq=nonsense/
+    );
     assert_error('integer!in=', /integer!in= is not a integer: in=/);
     for (let i = 0; i <= 10000; i++) {
       assert_not_inspect('integer', notInteger());
     }
   });
-  it('inspect checks for numbers', function() {
+  it('inspect checks for numbers', function () {
     assert_inspect('number', 10.1);
     assert_inspect('number', -10.1);
     assert_inspect('number', 10);
@@ -152,17 +172,20 @@ describe('inspection', function() {
     assert_not_inspect('number', null);
     assert_not_inspect('number!', null);
     assert_error('number!eq=', '12', /number!eq= is not a number: eq=/);
-    assert_error('number?eq=nonsense', /number\?eq=nonsense is not a number: eq=nonsense/);
+    assert_error(
+      'number?eq=nonsense',
+      /number\?eq=nonsense is not a number: eq=nonsense/
+    );
     assert_error('number!in=', /number!in= is not a number: in=/);
     for (let i = 0; i <= 10000; i++) {
       assert_not_inspect('number', notFloat());
     }
   });
-  it('inspect checks for functions', function() {
-    assert_inspect('function', function() {});
+  it('inspect checks for functions', function () {
+    assert_inspect('function', function () {});
     assert_inspect('function', new Function());
     assert_inspect('function?', null);
-    assert_inspect('function!', function() {});
+    assert_inspect('function!', function () {});
     assert_not_inspect('function', 'abc');
     assert_not_inspect('function', '00000000-000000000000000000000000');
     assert_not_inspect('function', 123);
@@ -173,7 +196,7 @@ describe('inspection', function() {
       assert_not_inspect('function', notFunction());
     }
   });
-  it('inspect checks for uuid', function() {
+  it('inspect checks for uuid', function () {
     assert_inspect('uuid', '00000000-0000-0000-0000-000000000000');
     assert_inspect('uuid', '58c29992-85f6-11ea-bc55-0242ac130003');
     assert_inspect('uuid', '6d7c4c8e-85f6-11ea-bc55-0242ac130003');

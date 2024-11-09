@@ -2,7 +2,7 @@ const assert = require('assert');
 
 const { guard } = require('../src');
 
-const assert_guard = function(schema, value, output) {
+const assert_guard = function (schema, value, output) {
   assert.deepStrictEqual(guard(schema, value), output);
 };
 
@@ -16,30 +16,30 @@ describe('integration', () => {
     schema = [
       {
         lat: 'number!',
-        lng: 'number!'
-      }
+        lng: 'number!',
+      },
     ];
     value = [
       {
         lat: 12,
         lng: -21,
-        someval: 'removed'
+        someval: 'removed',
       },
       {
         lat: 12,
         lng: -21,
-        extra: 'exclude'
-      }
+        extra: 'exclude',
+      },
     ];
     output = [
       {
         lat: 12,
-        lng: -21
+        lng: -21,
       },
       {
         lat: 12,
-        lng: -21
-      }
+        lng: -21,
+      },
     ];
     return assert_guard(schema, value, output);
   });
@@ -48,22 +48,22 @@ describe('integration', () => {
     schema = [
       {
         lat: 'number!gte=-90&lte=90',
-        lng: 'number!gte=-180&lte=180'
-      }
+        lng: 'number!gte=-180&lte=180',
+      },
     ];
     value = [
       {
         // Good lat/lng, but with extra nonsense
         lat: 12,
         lng: -21,
-        someval: 'removed'
+        someval: 'removed',
       },
       {
         // Bad lat, with extra nonsense
         lat: -100,
         lng: -21,
-        extra: 'exclude'
-      }
+        extra: 'exclude',
+      },
     ];
     assert.throws(() => {
       return guard(schema, value);
@@ -77,16 +77,12 @@ describe('integration', () => {
         {
           a: 'integer!',
           b: 'string',
-          'c?': 'boolean?'
+          'c?': 'boolean?',
         },
-        {
-          lat: 'number!',
-          lng: 'number!'
-        }
       ],
       c: {
-        title: 'string?'
-      }
+        title: 'string?',
+      },
     };
     value = {
       a: 123.0,
@@ -94,26 +90,18 @@ describe('integration', () => {
         {
           a: 31,
           b: 'cdf',
-          c: null
-        },
-        {
-          lat: 12,
-          lng: -21
+          c: null,
         },
         {
           a: 31,
           b: 'cdf',
-          c: true
+          c: true,
         },
-        {
-          lat: 12,
-          lng: -21
-        }
       ],
       c: {
         name: 'dilnas',
-        title: 'the guard'
-      }
+        title: 'the guard',
+      },
     };
     output = {
       a: 123.0,
@@ -121,25 +109,17 @@ describe('integration', () => {
         {
           a: 31,
           b: 'cdf',
-          c: null
-        },
-        {
-          lat: 12,
-          lng: -21
+          c: null,
         },
         {
           a: 31,
           b: 'cdf',
-          c: true
+          c: true,
         },
-        {
-          lat: 12,
-          lng: -21
-        }
       ],
       c: {
-        title: 'the guard'
-      }
+        title: 'the guard',
+      },
     };
     assert_guard(schema, value, output);
   });
@@ -151,48 +131,46 @@ describe('integration', () => {
         objArray: [
           {
             a: 'number!eq=-0.1',
-            "b?": 'integer?'
-          }
+            'b?': 'integer?',
+          },
         ],
         string: 'string?gte=3',
         positiveNumber: 'number!gt=0',
-        "optionalArray?": ['boolean'],
-        "optionalObject?": {
-          a: 'boolean '
-        }
-      }
+        'optionalArray?': ['boolean'],
+        'optionalObject?': {
+          a: 'boolean ',
+        },
+      },
     ];
     value = [
       {
-        intArray: [1,
-      2],
+        intArray: [1, 2],
         objArray: [
           {
             a: -0.1,
-            b: null
-          }
+            b: null,
+          },
         ],
         string: 'abc',
         positiveNumber: 10.123,
         optionalArray: null,
-        optionalObject: null
-      }
+        optionalObject: null,
+      },
     ];
     output = [
       {
-        intArray: [1,
-      2],
+        intArray: [1, 2],
         objArray: [
           {
             a: -0.1,
-            b: null
-          }
+            b: null,
+          },
         ],
         string: 'abc',
         positiveNumber: 10.123,
         optionalArray: null,
-        optionalObject: null
-      }
+        optionalObject: null,
+      },
     ];
     assert_guard(schema, value, output);
   });

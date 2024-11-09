@@ -1,5 +1,4 @@
 module.exports = {
-  
   // isError: (err) ->
   // 	toString.call(err) == '[object Error]'
   isFunction: (fnc) => {
@@ -8,7 +7,7 @@ module.exports = {
   isString: (str) => {
     return typeof str === 'string' || str instanceof String;
   },
-  
+
   // istanbul ignore next
   isFloat: (number) => {
     return typeof number === 'number' || number instanceof Number;
@@ -20,5 +19,5 @@ module.exports = {
   },
   isDefined: (good) => {
     return good !== null && good !== void 0;
-  }
+  },
 };

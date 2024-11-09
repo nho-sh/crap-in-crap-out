@@ -1,14 +1,15 @@
 {
   "name": "crap-in-crap-out",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A strict JSON validator with a very simple, wysiwyg, human friendly schema",
   "main": "src/index.js",
   "scripts": {
     "pre-deploy": "npm run test && npm run lint",
     "debug": "node --inspect-brk ./node_modules/.bin/mocha ./test/_entry.js",
+    "format": "prettier --write .",
     "package": "rm *.tgz && npm pack",
     "test": "nyc --lines=100 --check-coverage=true --reporter=html --reporter=text mocha ./test/_entry.js",
-    "lint": "eslint 'src/*.js' -c ./.eslintrc"
+    "lint": "eslint 'src/*.js' 'test/*.js' -c ./.eslintrc.json"
   },
   "keywords": [
     "arguments",
@@ -20,10 +21,13 @@
   ],
   "author": "nhosh",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "eslint": "^8.2.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-mocha": "^10.5.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "mocha": "^9.1.3",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "prettier": "^3.3.3"
   }
 }

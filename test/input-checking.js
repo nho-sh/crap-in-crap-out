@@ -1,11 +1,10 @@
 const assert = require('assert');
 
-const  { inspectForError, guard } = require('../src');
+const { inspectForError } = require('../src');
 
-const { notAFunction, notAGoodSchema } = require('../src/errors');
+const { notAGoodSchema } = require('../src/errors');
 
 describe('input-checking', () => {
-  
   // it 'guard only accepts functions', ->
 
   // 	badStuff = [
@@ -27,7 +26,7 @@ describe('input-checking', () => {
   // 			new RegExp(notAFunction)
   it('inspectForError only accepts strings as schema', () => {
     const badStuff = [null, void 0, [], {}, 10.0, 10, false];
-    return badStuff.forEach(function(bs) {
+    return badStuff.forEach(function (bs) {
       assert.throws(() => {
         return inspectForError(bs, null);
       }, new RegExp(notAGoodSchema));
