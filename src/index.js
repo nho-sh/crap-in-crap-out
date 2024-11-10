@@ -7,11 +7,12 @@ const { schemaParser } = require('./schema-parser.js');
 const {
   anythingValidator,
   booleanValidator,
-  stringValidator,
-  integerValidator,
-  numberValidator,
-  uuidValidator,
   functionValidator,
+  integerValidator,
+  nullValidator,
+  numberValidator,
+  stringValidator,
+  uuidValidator,
 } = require('./validators.js');
 
 const knownValueCheckers = {};
@@ -99,6 +100,9 @@ const valueChecker = function (schema) {
         return functionValidator(parsedSchema);
       case 'uuid':
         return uuidValidator(parsedSchema);
+      case 'null': {
+        return nullValidator(parsedSchema);
+      }
     }
   })();
 
@@ -108,8 +112,7 @@ const valueChecker = function (schema) {
 };
 
 const inspectForError = function (schema, good) {
-  var validator;
-  validator = valueChecker(schema);
+  const validator = valueChecker(schema);
   return validator(good);
 };
 

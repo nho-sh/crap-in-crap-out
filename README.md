@@ -95,6 +95,7 @@ A format that is well know and easy enough to read.
   - ... todo
 - `function`
   - ... todo
+- `null` -> Only allow `null` as a value
 
 ## Validation : Special Types
 

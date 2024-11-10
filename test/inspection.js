@@ -214,4 +214,12 @@ describe('inspection', function () {
       assert_not_inspect('uuid', notUuid());
     }
   });
+
+  it('inspect checks for null', function () {
+    assert_inspect('null', null);
+    assert_not_inspect('null', '58c29992-85f6-11ea-bc55-0242ac130003');
+    assert_not_inspect('null', {});
+    assert_not_inspect('null', 123.1);
+    assert_not_inspect('null', []);
+  });
 });

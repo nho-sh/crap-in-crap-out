@@ -83,6 +83,7 @@ describe('integration', () => {
       c: {
         title: 'string?',
       },
+      d: 'null!',
     };
     value = {
       a: 123.0,
@@ -102,6 +103,7 @@ describe('integration', () => {
         name: 'dilnas',
         title: 'the guard',
       },
+      d: null,
     };
     output = {
       a: 123.0,
@@ -120,6 +122,7 @@ describe('integration', () => {
       c: {
         title: 'the guard',
       },
+      d: null,
     };
     assert_guard(schema, value, output);
   });

@@ -1,5 +1,10 @@
 const { isString, isFunction, isFloat, isDefined } = require('./helpers.js');
 
+// Validator logic:
+//   Return false if okay
+//   Return error string if not okay,
+//     describing the problem
+
 const anythingValidator = function (parsedSchema) {
   return function (good) {
     if (good === null || good === void 0) {
@@ -183,6 +188,15 @@ const functionValidator = function (parsedSchema) {
   };
 };
 
+const nullValidator = function () {
+  return function (good) {
+    if (good === null) {
+      return false;
+    }
+    return 'null was expected, but something else was supplied';
+  };
+};
+
 module.exports = {
   anythingValidator: anythingValidator,
   booleanValidator: booleanValidator,
@@ -191,4 +205,5 @@ module.exports = {
   numberValidator: numberValidator,
   uuidValidator: uuidValidator,
   functionValidator: functionValidator,
+  nullValidator: nullValidator,
 };

@@ -9,7 +9,7 @@ const { isString } = require('./helpers.js');
 const querystring = require('querystring');
 
 const parseRegex =
-  /^(boolean|string|integer|number|uuid|function|email|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
+  /^(boolean|string|integer|number|uuid|function|email|null|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
 
 const schemaParser = function (schema) {
   var append, prepend, regex, result;
@@ -141,6 +141,12 @@ const schemaParser = function (schema) {
       eq,
       in: ins,
       regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    };
+  } else if (type === 'null') {
+    return {
+      source: schema,
+      type: 'null',
+      optional: false,
     };
   } else if (type === 'jwt') {
     return {
