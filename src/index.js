@@ -18,16 +18,15 @@ const {
 const knownValueCheckers = {};
 
 const valueChecker = function (schema) {
-  var newValidator, parsedSchema, val, validator;
-  validator = knownValueCheckers[schema];
+  const validator = knownValueCheckers[schema];
   if (validator) {
     // Cached?
     return validator;
   }
 
   // Does not exist, create it
-  parsedSchema = schemaParser(schema);
-  newValidator = (function () {
+  const parsedSchema = schemaParser(schema);
+  const newValidator = (function () {
     switch (parsedSchema.type) {
       case 'anything':
         return anythingValidator(parsedSchema);
@@ -52,9 +51,9 @@ const valueChecker = function (schema) {
           parsedSchema.in = parsedSchema.in.split(',');
         }
         return stringValidator(parsedSchema);
-      case 'integer':
+      case 'integer': {
         if (isDefined(parsedSchema.eq)) {
-          val = parseInt(parsedSchema.eq, 10);
+          const val = parseInt(parsedSchema.eq, 10);
           if (isNaN(val)) {
             throw new Error(
               `${parsedSchema.source} is not an integer: eq=${parsedSchema.eq}`
@@ -64,7 +63,7 @@ const valueChecker = function (schema) {
         }
         if (isDefined(parsedSchema.in)) {
           parsedSchema.in = parsedSchema.in.split(',').map(function (int) {
-            val = parseInt(int, 10);
+            const val = parseInt(int, 10);
             if (isNaN(val)) {
               throw new Error(
                 `${parsedSchema.source} is not a integer: in=${parsedSchema.in}`
@@ -74,9 +73,10 @@ const valueChecker = function (schema) {
           });
         }
         return integerValidator(parsedSchema);
-      case 'number':
+      }
+      case 'number': {
         if (isDefined(parsedSchema.eq)) {
-          val = parseFloat(parsedSchema.eq);
+          const val = parseFloat(parsedSchema.eq);
           if (isNaN(val)) {
             throw new Error(
               `${parsedSchema.source} is not a number: eq=${parsedSchema.eq}`
@@ -86,7 +86,7 @@ const valueChecker = function (schema) {
         }
         if (isDefined(parsedSchema.in)) {
           parsedSchema.in = parsedSchema.in.split(',').map(function (fl) {
-            val = parseFloat(fl);
+            const val = parseFloat(fl);
             if (isNaN(val)) {
               throw new Error(
                 `${parsedSchema.source} is not a number: in=${parsedSchema.in}`
@@ -96,6 +96,7 @@ const valueChecker = function (schema) {
           });
         }
         return numberValidator(parsedSchema);
+      }
       case 'function':
         return functionValidator(parsedSchema);
       case 'uuid':
@@ -117,7 +118,6 @@ const inspectForError = function (schema, good) {
 };
 
 const guard = function (schema, goods, parentGoods) {
-  var err, good, guarded, optional;
   if (isString(schema)) {
     const hasError = inspectForError(schema, goods);
     if (hasError) {
@@ -148,14 +148,13 @@ const guard = function (schema, goods, parentGoods) {
       schema = schema[0];
       const goodsLength = goods.length;
       for (let idx = 0; idx < goodsLength; idx++) {
-        good = goods[idx];
+        const good = goods[idx];
         try {
-          guarded = guard(schema, good, goods);
+          const guarded = guard(schema, good, goods);
+          result.push(guarded);
         } catch (error) {
-          err = error;
-          throw `[${idx}]${err.message || err}`;
+          throw `[${idx}]${error.message || error}`;
         }
-        result.push(guarded);
       }
     } else {
       throw ' More than 1 schema in the array';
@@ -177,7 +176,7 @@ const guard = function (schema, goods, parentGoods) {
         const keyLen = key.length;
         // Check if the object key ends with a '?'
         // thus making it optional instead of required
-        optional = key[keyLen - 1] === '?';
+        const optional = key[keyLen - 1] === '?';
         if (optional) {
           key = key.substring(0, keyLen - 1);
         }
@@ -188,8 +187,7 @@ const guard = function (schema, goods, parentGoods) {
           guarded = guard(objSchema, val, goods);
         }
       } catch (error) {
-        err = error;
-        throw `.${key}${err}`;
+        throw `.${key}${error}`;
       }
       result[key] = guarded;
     }
@@ -218,15 +216,14 @@ const guardian = function (input_schema, out_schema) {
       throw new Error(notAFunction);
     }
     return function () {
-      var args, err, result, scope;
-      scope = this;
-      args = arguments;
+      const args = arguments;
+      const scope = this;
+      let result;
       if (input_schema) {
         try {
           result = funcToWrap.apply(scope, guard(input_schema, args));
         } catch (error) {
-          err = error;
-          throw `Guarding input failed ${err.message || err}`;
+          throw `Guarding input failed ${error.message || error}`;
         }
       } else {
         result = funcToWrap.apply(scope, args);
@@ -242,19 +239,17 @@ const guardian = function (input_schema, out_schema) {
 module.exports = {
   inspectForError: inspectForError,
   reject: function (schema, goods) {
-    var hasError;
-    hasError = inspectForError(schema, goods);
+    const hasError = inspectForError(schema, goods);
     if (hasError) {
       throw new Error(hasError);
     }
   },
   guard: function (schemas, goods) {
-    var err, finalError;
+    var err;
     try {
       return guard(schemas, goods);
     } catch (error) {
-      err = error;
-      finalError = err;
+      let finalError = error;
       if (finalError[0] === '.') {
         finalError = finalError.substring(1);
       }
