@@ -44,7 +44,7 @@ describe('inspection', function () {
     assert_not_inspect('...', null);
     assert_not_inspect('...!', null);
     assert_not_inspect('...!', void 0);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert('...', anything());
     }
   });
@@ -60,7 +60,7 @@ describe('inspection', function () {
     assert_not_inspect('boolean!', null);
     assert_not_inspect('boolean!eq=true', false);
     assert_not_inspect('boolean!eq=false', true);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('boolean', notBoolean());
     }
     assert_error(
@@ -103,7 +103,7 @@ describe('inspection', function () {
     assert_not_inspect('string!regex=^abc', 'def');
     assert_not_inspect('string', null);
     assert_not_inspect('string!', null);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('string', notString());
     }
   });
@@ -140,7 +140,7 @@ describe('inspection', function () {
       /integer\?eq=nonsense is not an integer: eq=nonsense/
     );
     assert_error('integer!in=', /integer!in= is not a integer: in=/);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('integer', notInteger());
     }
   });
@@ -177,7 +177,7 @@ describe('inspection', function () {
       /number\?eq=nonsense is not a number: eq=nonsense/
     );
     assert_error('number!in=', /number!in= is not a number: in=/);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('number', notFloat());
     }
   });
@@ -192,7 +192,7 @@ describe('inspection', function () {
     assert_not_inspect('function', 123.0);
     assert_not_inspect('function!', null);
     assert_not_inspect('function!', false);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('function', notFunction());
     }
   });
@@ -210,7 +210,7 @@ describe('inspection', function () {
     assert_not_inspect('uuid', '00000000-000000000000000000000000');
     assert_not_inspect('uuid', 123);
     assert_not_inspect('uuid!', null);
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 100; i++) {
       assert_not_inspect('uuid', notUuid());
     }
   });

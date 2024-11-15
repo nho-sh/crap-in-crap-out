@@ -117,20 +117,14 @@ const inspectForError = function (schema, good) {
   return validator(good);
 };
 
-const guard = function (schema, goods, parentGoods) {
+const guard = function (schema, goods) {
   if (isString(schema)) {
     const hasError = inspectForError(schema, goods);
     if (hasError) {
       throw `:${schema} ` + hasError;
     } else {
       // Schema is validated at this point
-      // so it can be schema=function OR schema=... + typeof(goods)=function
-      if (schema === 'function' || isFunction(goods)) {
-        // Since we construct our own object/array with fields,
-        // the functions we assign into our structure will have a different scope
-        // Therefor, when we copy over functions by reference, we need to correct their scope
-        return goods.bind(parentGoods);
-      }
+      // Om case goods is undefined, we fallback to null
       return goods != null ? goods : null;
     }
   }
@@ -150,7 +144,7 @@ const guard = function (schema, goods, parentGoods) {
       for (let idx = 0; idx < goodsLength; idx++) {
         const good = goods[idx];
         try {
-          const guarded = guard(schema, good, goods);
+          const guarded = guard(schema, good);
           result.push(guarded);
         } catch (error) {
           throw `[${idx}]${error.message || error}`;
@@ -172,11 +166,14 @@ const guard = function (schema, goods, parentGoods) {
     const result = {};
     for (let key of Object.keys(schema)) {
       const objSchema = schema[key];
+      let guarded = null;
+
       try {
         const keyLen = key.length;
         // Check if the object key ends with a '?'
         // thus making it optional instead of required
         const optional = key[keyLen - 1] === '?';
+
         if (optional) {
           key = key.substring(0, keyLen - 1);
         }
@@ -245,7 +242,6 @@ module.exports = {
     }
   },
   guard: function (schemas, goods) {
-    var err;
     try {
       return guard(schemas, goods);
     } catch (error) {
