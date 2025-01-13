@@ -67,7 +67,7 @@ describe('integration', () => {
     ];
     assert.throws(() => {
       return guard(schema, value);
-    }, /Guard failed: \[1\].lat:number!gte=-90&lte=90 -100 <= -90 evaluated false/);
+    }, /-100 <= -90 evaluated false @ \[1\].lat/);
   });
   it('guard works on complex object 1', () => {
     var output, schema, value;

@@ -7,13 +7,13 @@ describe('guardian', function () {
   it('guardian checks input', function () {
     assert.throws(function () {
       return guardian(null, null);
-    }, /Guardian got no schema's to validate with, pass either input or out schema, or both./);
+    }, /Function got no schema's to validate with, pass either input or out schema, or both./);
     assert.throws(function () {
       return guardian({}, {}, {});
-    }, /Guardian only excepts input_schema and out_schema, no further arguments. You supplied 3/);
+    }, /Function only excepts input_schema and out_schema, no further arguments. You supplied 3/);
     assert.throws(function () {
       return guardian({}, {});
-    }, /Guardian input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined./);
+    }, /Function input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined./);
     assert.throws(function () {
       return guardian([{}], {})({});
     }, new RegExp(notAFunction));
@@ -33,9 +33,8 @@ describe('guardian', function () {
     return guardian([{}])(function () {})();
   });
   it('guardian properly validates inputs and outputs', function () {
-    var dinlas, elevenPercent;
-    dinlas = guardian(['integer'], 'integer');
-    elevenPercent = dinlas(function (arg1, arg2) {
+    const dinlas = guardian(['integer'], 'integer');
+    const elevenPercent = dinlas(function (arg1, arg2) {
       return (arg1 + arg2) * 1.1;
     });
     assert(elevenPercent(10, 0) === 11);
@@ -44,11 +43,11 @@ describe('guardian', function () {
     // elevenPercent(10, 1) => 12.1
     assert.throws(function () {
       return elevenPercent(10, 1) === 11;
-    }, /:integer Not an integer/);
+    }, /12.100000000000001 is not an integer @ /);
 
     // Check for proper input validation
     assert.throws(function () {
       return elevenPercent(10, 1.1);
-    }, /Guarding input failed \[1\]:integer Not an integer: 1.1/);
+    }, /1.1 is not an integer @ \[1\]/);
   });
 });

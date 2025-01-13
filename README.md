@@ -115,6 +115,16 @@ Some common special types are also supported out of the box
 - `password`
   - ... todo
 
+## Errors
+
+When a validation does not pass, the code throws an Error instance.
+The error message will describe the problem in a human friendly way,
+but the Error instance will also have a field `path` that documents
+the path inside the validated data, and pinpoint the location of
+the first validation error.
+
+This path is compatible with lodash `_.get`
+
 ## Performance
 
 Each validation is converted internally to a cached function,

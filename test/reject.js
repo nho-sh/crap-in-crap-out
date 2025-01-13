@@ -9,6 +9,6 @@ describe('rejection', function () {
   it('reject throws errors on bad inspections', function () {
     assert.throws(function () {
       reject('string', 1);
-    }, /Not a string: 1/);
+    }, /1 is not a string/);
   });
 });

@@ -28,12 +28,12 @@ const booleanValidator = function (parsedSchema) {
       return 'null was supplied, but not allowed';
     }
     if (isDefined(parsedSchema.eq) && good !== parsedSchema.eq) {
-      return `Not the expected value ${parsedSchema.eq}`;
+      return `${good} is not the expected value ${parsedSchema.eq}`;
     }
     if (good === true || good === false) {
       return false;
     }
-    return `Not a boolean: ${good}`;
+    return `${good} is not a boolean`;
   };
 };
 
@@ -48,7 +48,7 @@ const stringValidator = function (parsedSchema) {
     }
     if (isString(good)) {
       if (isDefined(parsedSchema.eq) && good !== parsedSchema.eq) {
-        return `Not the expected value ${parsedSchema.eq}`;
+        return `${good} is not the expected value ${parsedSchema.eq}`;
       }
       if (isDefined(parsedSchema.len)) {
         realLen = good.length;
@@ -57,10 +57,10 @@ const stringValidator = function (parsedSchema) {
         }
       }
       if (parsedSchema.in && parsedSchema.in.indexOf(good) < 0) {
-        return `Value ${good} not in the allowed list ${parsedSchema.in.join(',')}`;
+        return `${good} not in the allowed list ${parsedSchema.in.join(',')}`;
       }
       if (parsedSchema.regex && !parsedSchema.regex.test(good)) {
-        return `Value ${good} does not match the regular expression ${parsedSchema.regex.toString()}`;
+        return `${good} does not match the regular expression ${parsedSchema.regex.toString()}`;
       }
       len = good.length;
       if (parsedSchema.gte && len < parsedSchema.gte) {
@@ -77,7 +77,7 @@ const stringValidator = function (parsedSchema) {
       }
       return false;
     }
-    return `Not a string: ${good}`;
+    return `${good} is not a string`;
   };
 };
 
@@ -94,7 +94,7 @@ const integerValidator = function (parsedSchema) {
         return `Not the expected value ${parsedSchema.eq}`;
       }
       if (parsedSchema.in && parsedSchema.in.indexOf(good) < 0) {
-        return `Value ${good} not in the allowed list ${parsedSchema.in.join(',')}`;
+        return `${good} not in the allowed list ${parsedSchema.in.join(',')}`;
       }
       if (parsedSchema.gte && good < parsedSchema.gte) {
         return `${good} <= ${parsedSchema.gte} evaluated false`;
@@ -110,7 +110,7 @@ const integerValidator = function (parsedSchema) {
       }
       return false;
     }
-    return `Not an integer: ${good}`;
+    return `${good} is not an integer`;
   };
 };
 
@@ -124,10 +124,10 @@ const numberValidator = function (parsedSchema) {
     }
     if (isFloat(good)) {
       if (isDefined(parsedSchema.eq) && good !== parsedSchema.eq) {
-        return `Not the expected value ${parsedSchema.eq}`;
+        return `${good} is not the expected value ${parsedSchema.eq}`;
       }
       if (parsedSchema.in && parsedSchema.in.indexOf(good) < 0) {
-        return `Value ${good} not in the allowed list ${parsedSchema.in.join(',')}`;
+        return `${good} not in the allowed list ${parsedSchema.in.join(',')}`;
       }
       if (parsedSchema.gte && good < parsedSchema.gte) {
         return `${good} <= ${parsedSchema.gte} evaluated false`;
@@ -143,7 +143,7 @@ const numberValidator = function (parsedSchema) {
       }
       return false;
     }
-    return `${good} is not a numbering number`;
+    return `${good} is not a number`;
   };
 };
 
@@ -169,7 +169,7 @@ const uuidValidator = function (parsedSchema) {
         return false;
       }
     }
-    return `Not a uuid: ${good}`;
+    return `${good} is not a uuid`;
   };
 };
 
@@ -184,7 +184,7 @@ const functionValidator = function (parsedSchema) {
     if (isFunction(good)) {
       return false;
     }
-    return `Not a function: ${typeof good}`;
+    return `${typeof good} is not a function`;
   };
 };
 

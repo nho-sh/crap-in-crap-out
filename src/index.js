@@ -117,11 +117,29 @@ const inspectForError = function (schema, good) {
   return validator(good);
 };
 
+const buildFinalError = (error) => {
+  if (error instanceof Error) {
+    return error;
+  } else {
+    const fullPath =
+      error.path[error.path.length - 1] === '.'
+        ? error.path.substring(0, error.path.length - 1)
+        : error.path;
+
+    const err = new Error(`${error.msg} @ ${fullPath}`);
+    err.path = fullPath;
+    return err;
+  }
+};
+
 const guard = function (schema, goods) {
   if (isString(schema)) {
     const hasError = inspectForError(schema, goods);
     if (hasError) {
-      throw `:${schema} ` + hasError;
+      throw {
+        msg: hasError,
+        path: '',
+      };
     } else {
       // Schema is validated at this point
       // Om case goods is undefined, we fallback to null
@@ -130,13 +148,19 @@ const guard = function (schema, goods) {
   }
   if (isArray(schema)) {
     if (!isArray(goods)) {
-      throw `:Value is not an array, but a ${typeof goods}`;
+      throw {
+        msg: `Value is not an array, but a ${typeof goods}`,
+        path: '',
+      };
     }
+
     const result = [];
     const schemaCount = schema.length;
+
     if (schemaCount === 0) {
-      throw ' No schema(s) defined in the array';
+      throw new Error('No schema(s) defined in the array');
     }
+
     if (schemaCount === 1) {
       // Typical scenario, just go through it as fast as possible
       schema = schema[0];
@@ -147,17 +171,24 @@ const guard = function (schema, goods) {
           const guarded = guard(schema, good);
           result.push(guarded);
         } catch (error) {
-          throw `[${idx}]${error.message || error}`;
+          if (error instanceof Error) {
+            throw error;
+          } else {
+            throw {
+              msg: error.msg,
+              path: `[${idx}].${error.path}`,
+            };
+          }
         }
       }
     } else {
-      throw ' More than 1 schema in the array';
+      throw new Error('More than 1 schema in the array');
     }
 
     return result;
   } else {
     if (!goods) {
-      throw ':Value is not an object';
+      throw new Error('Value is not an object');
     }
 
     // Also handled bad input
@@ -184,7 +215,14 @@ const guard = function (schema, goods) {
           guarded = guard(objSchema, val, goods);
         }
       } catch (error) {
-        throw `.${key}${error}`;
+        if (error instanceof Error) {
+          throw error;
+        } else {
+          throw {
+            msg: error.msg,
+            path: `${key}.${error.path}`,
+          };
+        }
       }
       result[key] = guarded;
     }
@@ -195,17 +233,17 @@ const guard = function (schema, goods) {
 const guardian = function (input_schema, out_schema) {
   if (arguments.length > 2) {
     throw new Error(
-      `Guardian only excepts input_schema and out_schema, no further arguments. You supplied ${arguments.length}`
+      `Function only excepts input_schema and out_schema, no further arguments. You supplied ${arguments.length}`
     );
   }
   if (!input_schema && !out_schema) {
     throw new Error(
-      "Guardian got no schema's to validate with, pass either input or out schema, or both."
+      "Function got no schema's to validate with, pass either input or out schema, or both."
     );
   }
   if (input_schema && !isArray(input_schema)) {
     throw new Error(
-      'Guardian input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined.'
+      'Function input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined.'
     );
   }
   return function (funcToWrap) {
@@ -220,13 +258,17 @@ const guardian = function (input_schema, out_schema) {
         try {
           result = funcToWrap.apply(scope, guard(input_schema, args));
         } catch (error) {
-          throw `Guarding input failed ${error.message || error}`;
+          throw buildFinalError(error);
         }
       } else {
         result = funcToWrap.apply(scope, args);
       }
       if (out_schema) {
-        return guard(out_schema, result);
+        try {
+          return guard(out_schema, result);
+        } catch (error) {
+          throw buildFinalError(error);
+        }
       }
       return result;
     };
@@ -245,11 +287,7 @@ module.exports = {
     try {
       return guard(schemas, goods);
     } catch (error) {
-      let finalError = error;
-      if (finalError[0] === '.') {
-        finalError = finalError.substring(1);
-      }
-      throw new Error(`Guard failed: ${finalError}`);
+      throw buildFinalError(error);
     }
   },
   guardian: guardian,

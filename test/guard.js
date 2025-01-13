@@ -61,7 +61,7 @@ describe('guard', () => {
           b: 'badvalue',
         }
       );
-    }, /Guard failed: b:integer Not an integer: badvalue/);
+    }, /badvalue is not an integer @ b/);
   });
   it('guard checks for invalid types', () => {
     assert.throws(() => {
@@ -73,7 +73,7 @@ describe('guard', () => {
           a: 'abc',
         }
       );
-    }, /Error: Guard failed: aError: Failed to parse schema strAng/);
+    }, /Failed to parse schema strAng/);
   });
   it('guard allows null when its optional', () => {
     assert_guard(
@@ -121,7 +121,7 @@ describe('guard', () => {
   it('guard works on arrays', () => {
     assert.throws(() => {
       return guard(['integer'], [1, 2, 3, 1.23]);
-    }, /Guard failed: \[3\]:integer Not an integer: 1.23/);
+    }, /1.23 is not an integer @ \[3\]/);
   });
   it('guard warns about missing schemas', () => {
     assert.throws(() => {
@@ -180,7 +180,7 @@ describe('guard', () => {
           },
         ]
       );
-    }, /Guard failed: \[0\].aError: Failed to parse schema numberingpointnumber!/);
+    }, /Failed to parse schema numberingpointnumber/);
   });
   it('guard works on nested schemas', () => {
     assert.throws(() => {
@@ -200,7 +200,7 @@ describe('guard', () => {
           },
         }
       );
-    }, /Guard failed: b.d:integer Not an integer: badvalue/);
+    }, /badvalue is not an integer @ b.d/);
   });
   it('guard checks if a nested object is present', () => {
     assert.throws(() => {
@@ -217,7 +217,7 @@ describe('guard', () => {
           b: null,
         }
       );
-    }, /Guard failed: b:Value is not an object/);
+    }, /Value is not an object/);
   });
   it('guard checks if a nested array is present', () => {
     assert.throws(() => {
@@ -235,7 +235,7 @@ describe('guard', () => {
           b: void 0,
         }
       );
-    }, /Guard failed: b:Value is not an array/);
+    }, /Value is not an array/);
   });
   it('guard allows optional keys 1', () => {
     return guard(
