@@ -80,6 +80,13 @@ As you can see in the example, validations are writting as HTTP Queries:
 `<type>?condition=1&...`
 
 A format that is well know and easy enough to read.
+If you are troubled with encoding issues, for example with `regex`,
+you can do
+
+```js
+// Simple telephone regex
+`string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`
+```
 
 ## Validation : Basic Types
 

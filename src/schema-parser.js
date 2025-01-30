@@ -12,7 +12,7 @@ const parseRegex =
   /^(boolean|string|integer|number|uuid|function|email|null|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
 
 const schemaParser = function (schema) {
-  var append, prepend, regex, result;
+  var append, prepend, result;
   if (!isString(schema)) {
     throw new Error(notAGoodSchema);
   }
@@ -61,12 +61,11 @@ const schemaParser = function (schema) {
   const eq = query.eq;
   const ins = query.in;
 
-  regex = !query.regex
-    ? null
-    : ((result = query.regex.trim()),
-      result[0] !== '^' ? (prepend = '^') : void 0,
-      result[result.length - 1] !== '$' ? (append = '$') : void 0,
-      new RegExp((prepend || '') + result + (append || '')));
+  let regex = null;
+
+  if (query.regex) {
+    regex = new RegExp(query.regex);
+  }
 
   // istanbul ignore else
   if (type === 'boolean') {

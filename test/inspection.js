@@ -15,10 +15,8 @@ const {
 } = require('./_generators');
 
 const assert_inspect = function (schema, value) {
-  assert(
-    !isString(inspectForError(schema, value)),
-    `schema ${schema} should validate ${value}`
-  );
+  const err = inspectForError(schema, value);
+  assert(!isString(err), `schema ${schema} should validate ${value} : ${err}`);
 };
 
 const assert_not_inspect = function (schema, value) {
@@ -87,6 +85,10 @@ describe('inspection', function () {
     assert_inspect('string!regex=^abc$', 'abc');
     assert_inspect('string!regex=abc|def', 'abc');
     assert_inspect('string!regex=abc|def', 'def');
+    assert_inspect(
+      `string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`,
+      '+123'
+    );
     assert_not_inspect('string!gte=1&lte=2', 'xxx');
     assert_not_inspect('string!gt=1&lt=3', 'xxx');
     assert_not_inspect('string!gte=1&lte=2', '');
