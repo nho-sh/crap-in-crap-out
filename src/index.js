@@ -109,6 +109,7 @@ const valueChecker = function (schema) {
 
   // Cache forever
   knownValueCheckers[schema] = newValidator;
+
   return newValidator;
 };
 
@@ -121,10 +122,9 @@ const buildFinalError = (error) => {
   if (error instanceof Error) {
     return error;
   } else {
-    const fullPath =
-      error.path[error.path.length - 1] === '.'
-        ? error.path.substring(0, error.path.length - 1)
-        : error.path;
+    const fullPath = error.path.endsWith('.')
+      ? error.path.substring(0, error.path.length - 1)
+      : error.path;
 
     const err = new Error(`${error.msg} @ ${fullPath}`);
     err.path = fullPath;
@@ -158,7 +158,7 @@ const guard = function (schema, goods) {
     const schemaCount = schema.length;
 
     if (schemaCount === 0) {
-      throw new Error('No schema(s) defined in the array');
+      throw new Error('No schema defined in the array');
     }
 
     if (schemaCount === 1) {
@@ -182,6 +182,8 @@ const guard = function (schema, goods) {
         }
       }
     } else {
+      // TODO: pick some fields from the first and second item
+      // and report the, to find those objects more easily
       throw new Error('More than 1 schema in the array');
     }
 
@@ -201,18 +203,20 @@ const guard = function (schema, goods) {
 
       try {
         const keyLen = key.length;
+
         // Check if the object key ends with a '?'
         // thus making it optional instead of required
-        const optional = key[keyLen - 1] === '?';
-
+        // 'key?' -> key
+        const optional = key.endsWith('?');
         if (optional) {
           key = key.substring(0, keyLen - 1);
         }
+
         const val = goods[key];
         if (val == null && optional) {
           guarded = null;
         } else {
-          guarded = guard(objSchema, val, goods);
+          guarded = guard(objSchema, val);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -230,12 +234,7 @@ const guard = function (schema, goods) {
   }
 };
 
-const guardian = function (input_schema, out_schema) {
-  if (arguments.length > 2) {
-    throw new Error(
-      `Function only excepts input_schema and out_schema, no further arguments. You supplied ${arguments.length}`
-    );
-  }
+const guardian = (input_schema, out_schema, funcToWrap) => {
   if (!input_schema && !out_schema) {
     throw new Error(
       "Function got no schema's to validate with, pass either input or out schema, or both."
@@ -246,32 +245,30 @@ const guardian = function (input_schema, out_schema) {
       'Function input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined.'
     );
   }
-  return function (funcToWrap) {
-    if (!isFunction(funcToWrap)) {
-      throw new Error(notAFunction);
+  if (!isFunction(funcToWrap)) {
+    throw new Error(notAFunction);
+  }
+
+  return function (...args) {
+    const scope = this;
+    let result;
+    if (input_schema) {
+      try {
+        result = funcToWrap.apply(scope, guard(input_schema, args));
+      } catch (error) {
+        throw buildFinalError(error);
+      }
+    } else {
+      result = funcToWrap.apply(scope, args);
     }
-    return function () {
-      const args = arguments;
-      const scope = this;
-      let result;
-      if (input_schema) {
-        try {
-          result = funcToWrap.apply(scope, guard(input_schema, args));
-        } catch (error) {
-          throw buildFinalError(error);
-        }
-      } else {
-        result = funcToWrap.apply(scope, args);
+    if (out_schema) {
+      try {
+        return guard(out_schema, result);
+      } catch (error) {
+        throw buildFinalError(error);
       }
-      if (out_schema) {
-        try {
-          return guard(out_schema, result);
-        } catch (error) {
-          throw buildFinalError(error);
-        }
-      }
-      return result;
-    };
+    }
+    return result;
   };
 };
 

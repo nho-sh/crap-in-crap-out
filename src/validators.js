@@ -20,7 +20,7 @@ const anythingValidator = function (parsedSchema) {
 };
 
 const booleanValidator = function (parsedSchema) {
-  return function (good) {
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -38,8 +38,7 @@ const booleanValidator = function (parsedSchema) {
 };
 
 const stringValidator = function (parsedSchema) {
-  return function (good) {
-    var len, realLen;
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -51,7 +50,7 @@ const stringValidator = function (parsedSchema) {
         return `${good} is not the expected value ${parsedSchema.eq}`;
       }
       if (isDefined(parsedSchema.len)) {
-        realLen = good.length;
+        const realLen = good.length;
         if (realLen !== parsedSchema.len) {
           return `Expecting value length ${parsedSchema.len} but got ${realLen}`;
         }
@@ -62,7 +61,7 @@ const stringValidator = function (parsedSchema) {
       if (parsedSchema.regex && !parsedSchema.regex.test(good)) {
         return `${good} does not match the regular expression ${parsedSchema.regex.toString()}`;
       }
-      len = good.length;
+      const len = good.length;
       if (parsedSchema.gte && len < parsedSchema.gte) {
         return `${len} <= ${parsedSchema.gte} evaluated false`;
       }
@@ -82,7 +81,7 @@ const stringValidator = function (parsedSchema) {
 };
 
 const integerValidator = function (parsedSchema) {
-  return function (good) {
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -115,7 +114,7 @@ const integerValidator = function (parsedSchema) {
 };
 
 const numberValidator = function (parsedSchema) {
-  return function (good) {
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -153,8 +152,7 @@ const longUuidRegex =
   /^[a-fA-F0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/;
 
 const uuidValidator = function (parsedSchema) {
-  return function (good) {
-    var len;
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -162,7 +160,7 @@ const uuidValidator = function (parsedSchema) {
       return 'null was supplied, but not allowed';
     }
     if (isString(good)) {
-      len = good.length;
+      const len = good.length;
       if (len === 32 && shortUuidRegex.test(good)) {
         return false;
       } else if (len === 36 && longUuidRegex.test(good)) {
@@ -174,7 +172,7 @@ const uuidValidator = function (parsedSchema) {
 };
 
 const functionValidator = function (parsedSchema) {
-  return function (good) {
+  return (good) => {
     if (good === null) {
       if (parsedSchema.optional) {
         return false;
@@ -189,7 +187,7 @@ const functionValidator = function (parsedSchema) {
 };
 
 const nullValidator = function () {
-  return function (good) {
+  return (good) => {
     if (good === null) {
       return false;
     }

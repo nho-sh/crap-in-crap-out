@@ -133,7 +133,7 @@ describe('guard', () => {
           },
         ]
       );
-    }, /No schema\(s\) defined in the array/);
+    }, /No schema defined in the array/);
   });
   it('guard warns about array length mismatches', () => {
     assert.throws(() => {
