@@ -56,13 +56,8 @@ const validationSchema = [
     'optionalObject?': { a: 'boolean' },
   },
 
-  // If you define a 2nd array element
-  // The array element validation will alternate
-  // between them.
-  // { 2nd position elements look like this }
-
-  // Every 3rd could a number if you like
-  // 'string?'
+  // Arrays only accept one element. Exta elements
+  // will result in an Error thrown.
 ];
 
 // Throws error if it's not validated
