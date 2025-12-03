@@ -4,11 +4,12 @@ This is a **strict JSON validator** with a very simple, wysiwyg, human friendly 
 
 It's contrary to the defensive programming paradigm, which aims to be flexible on input.
 Instead, by demanding strict input, calling code has to adhere 100% to the contract,
-and there are no surprises or side effects.
+and there are no surprises or side effects. There is one concession: extraneous
+fields are silently dropped.
 
-The schema definitions are written analogous to the data structure itself,
+The schema definitions are written analogous to the JSON data structure itself,
 including the arrays and objects. Every level of the real JSON data,
-is mirrored by the exact same level of validation level.
+is mirrored by the exact same validation level.
 
 ```js
 const { guard } = require('crap-in-crap-out');
@@ -27,15 +28,17 @@ const data = [
   },
 ];
 
-// This is the schema, it matches the exact same array/object structure
-// and just plain JSON
+// This is the JSON schema: it matches the same structure
+// and is just plain JSON
 const validationSchema = [
   // Every element in the array adheres to this object
   {
     oneAndTwo: ['integer'],
     objArray: [
       {
-        // Exclamation makes it required
+        // Fields are type checked.
+        // Exclamation (!) makes the field required
+        // While Question mark (?) makes the field optional
         // After ? or ! you can constrain the value
         a: 'number!eq=-0.1',
         // Question mark makes it optional
@@ -70,65 +73,71 @@ const validatedData = guard(validationSchema, data);
 
 ## Validation Definition
 
-As you can see in the example, validations are writting as HTTP Queries:
+As you can see in the example, validations are written similar to HTTP queries:
 
 `<type>?condition=1&...`
 
 A format that is well know and easy enough to read.
-If you are troubled with encoding issues, for example with `regex`,
-you can do
-
-```js
-// Simple telephone regex
-`string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`
-```
 
 ## Validation : Basic Types
 
-- `...` -> Allow anything that is not nill
-  - `...?` Allow anything, even null/undefined
-- `boolean` -> Allow true/false
-  - `boolean?` Allow true/false/null/undefined
-- `string`
-  - ... todo
-- `integer`
-  - ... todo
-- `number`
-  - ... todo
-- `function`
-  - ... todo
-- `null` -> Only allow `null` as a value
+| Type | Constraints | |
+|---|---|---|
+| `boolean`   | Allow true/false | |
+| `boolean?`  | Allow true/false/null/undefined | |
+| | | |
+| `string`    | `gte=` `gt=` | minimum length |
+| `string!`   | `lte=` `lt=` | maximum length |
+| `string?`   | `len=` | exact length |
+|             | `eq=` | exact string value |
+|             | `in=` | in a comma-separated string list |
+|             | `regex=` | matches a regex. If you are troubled with encoding issues you can do: `string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`. |
+| | | |
+| `integer`   | `gte=` `gt=` | above a integer value |
+| `integer!`   | `lte=` `lt=` | below a integer value |
+| `integer?`   | `eq=` | equal to a integer value |
+| | `in=` | in a comma-separated integer list. Invalid values in the schema will result in an Error thrown. |
+| | | |
+| `number`   | `gte=` `gt=` | above a number value |
+| `number!`   | `lte=` `lt=` | below a number value |
+| `number?`   | `eq=` | equal to a number value |
+| | `in=` | in a comma-separated number list. Invalid values in the schema will result in an Error thrown. |
+| | | |
+| `function`  | ... todo | |
+| | | |
+| `null`      | Only allow `null` | |
+| | | |
+| `...`       | Allow anything that is not nil | |
+| | | |
+| `...?`      | Allow anything, even null/undefined | |
 
-## Validation : Special Types
+## Validation : Special types
 
 Some common special types are also supported out of the box
 
-- `uuid` (no specific version checking, like v1, v4, ...)
-  - ... todo
-- `email`
-  - ... todo
-- `jwt`
-  - ... todo
-- `hex-color`
-  - ... todo
-- `timestamp-iso8601-ms`
-  - The timestamp defined by ISO8601, but including .000 milliseconds
-  - Uses the Z suffix, not +00:00
-- `password`
-  - ... todo
+| Type | Meaning |
+|---|---|
+| `uuid` | checks if its a 32 or 36 character string with hexadecimal characters (case insensitive). No support for versions such as v1, v4, ... |
+| `email` | very basic alpha-numeric e-mail check, uses a simple regex |
+| `jwt` | Simply checks if it looks like a JWT string. Does not decode or verify. Handy for initial input checking, but is not security. |
+| `hex-color` | case-insensitive 6 long hexadecimal color starting with `#` |
+| `timestamp-iso8601-ms` | ISO8601 timestamp including `.000` milliseconds; must use the `Z` suffix (not `+00:00`) |
 
 ## Errors
 
-When a validation does not pass, the code throws an Error instance.
+When a validation does not pass, the library throws an Error instance.
 The error message will describe the problem in a human friendly way,
 but the Error instance will also have a field `path` that documents
 the path inside the validated data, and pinpoint the location of
 the first validation error.
 
-This path is compatible with lodash `_.get`
+This path is compatible with lodash `_.get`, for example:
+
+- `-100 <= -90 evaluated false @ [1].lat` says that the object at array index 1,
+  has a incorrect value -100 in field `lat`.
 
 ## Performance
 
-Each validation is converted internally to a cached function,
-for fast evaluation. Also, because it's cached, identical validations
-use the same functions, reducing memory footprint.
+Each field validation is converted internally to a cached function,
+for fast evaluation. Because it's cached, identical validations
+use the same generated functions, reducing memory footprint.

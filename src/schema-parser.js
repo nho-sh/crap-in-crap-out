@@ -9,10 +9,9 @@ const { isString } = require('./helpers.js');
 const querystring = require('querystring');
 
 const parseRegex =
-  /^(boolean|string|integer|number|uuid|function|email|null|hex-color|jwt|password|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
+  /^(boolean|string|integer|number|uuid|function|email|null|hex-color|jwt|timestamp-iso8601-ms|bytesize)([!?]|$)(.*)/;
 
 const schemaParser = function (schema) {
-  var append, prepend, result;
   if (!isString(schema)) {
     throw new Error(notAGoodSchema);
   }
@@ -160,13 +159,6 @@ const schemaParser = function (schema) {
       type: 'string',
       optional,
       regex: /^#[A-Fa-f0-9]{6}$/,
-    };
-  } else if (type === 'password') {
-    return {
-      source: schema,
-      type: 'string',
-      optional,
-      gte: 8,
     };
   } else if (type === 'timestamp-iso8601-ms') {
     return {

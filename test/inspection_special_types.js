@@ -63,14 +63,6 @@ describe('inspection-special', () => {
     assert_not_inspect('jwt!', '#abcDE');
     assert_not_inspect('jwt!', '#abcDEff');
   });
-  it('inspect checks for passwords', () => {
-    assert_inspect('password', '12345678');
-    assert_inspect('password', '1234567870487953049875');
-    assert_inspect('password', '!#$!@#$%^#$%#$%');
-    assert_inspect('password', 'abcdefghijklmnopqrstuvwxyz');
-    assert_inspect('password', 'abcDEF123=-asdf');
-    assert_not_inspect('password', '1234567');
-  });
   it('inspect checks for timestamp-iso8601-ms', () => {
     assert_inspect('timestamp-iso8601-ms', '2021-11-03T20:16:33.000Z');
     assert_inspect('timestamp-iso8601-ms', new Date().toISOString());
