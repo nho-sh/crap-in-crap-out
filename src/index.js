@@ -4,6 +4,8 @@ const { notAFunction } = require('./errors.js');
 
 const { schemaParser } = require('./schema-parser.js');
 
+const { toOpenAPISchema } = require('./openapi.js');
+
 const {
   anythingValidator,
   booleanValidator,
@@ -288,4 +290,5 @@ module.exports = {
     }
   },
   guardian: guardian,
+  toOpenAPISchema: toOpenAPISchema,
 };

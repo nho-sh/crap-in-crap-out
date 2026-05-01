@@ -15,7 +15,7 @@ describe('guard', () => {
     assert_guard('number?', 123, 123);
   });
   it('guard works on simple schemas', () => {
-    let fnc = () => {};
+    const fnc = () => {};
 
     const schema = {
       a: 'string',

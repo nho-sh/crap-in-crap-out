@@ -11,6 +11,8 @@ The schema definitions are written analogous to the JSON data structure itself,
 including the arrays and objects. Every level of the real JSON data,
 is mirrored by the exact same validation level.
 
+Schema's are [convertible to OpenAPI specifications](./#OpenAPI Support).
+
 ```js
 const { guard } = require('crap-in-crap-out');
 
@@ -81,47 +83,48 @@ A format that is well know and easy enough to read.
 
 ## Validation : Basic Types
 
-| Type | Constraints | |
-|---|---|---|
-| `boolean`   | Allow true/false | |
-| `boolean?`  | Allow true/false/null/undefined | |
-| | | |
-| `string`    | `gte=` `gt=` | minimum length |
-| `string!`   | `lte=` `lt=` | maximum length |
-| `string?`   | `len=` | exact length |
-|             | `eq=` | exact string value |
-|             | `in=` | in a comma-separated string list |
-|             | `regex=` | matches a regex. If you are troubled with encoding issues you can do: `string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`. |
-| | | |
-| `integer`   | `gte=` `gt=` | above a integer value |
-| `integer!`   | `lte=` `lt=` | below a integer value |
-| `integer?`   | `eq=` | equal to a integer value |
-| | `in=` | in a comma-separated integer list. Invalid values in the schema will result in an Error thrown. |
-| | | |
-| `number`   | `gte=` `gt=` | above a number value |
-| `number!`   | `lte=` `lt=` | below a number value |
-| `number?`   | `eq=` | equal to a number value |
-| | `in=` | in a comma-separated number list. Invalid values in the schema will result in an Error thrown. |
-| | | |
-| `function`  | ... todo | |
-| | | |
-| `null`      | Only allow `null` | |
-| | | |
-| `...`       | Allow anything that is not nil | |
-| | | |
-| `...?`      | Allow anything, even null/undefined | |
+| Type       | Constraints                     |                                                                                                             |
+| ---------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `boolean`  | Allow true/false                |                                                                                                             |
+| `boolean?` | Allow true/false/null/undefined |                                                                                                             |
+|            |                                 |                                                                                                             |
+| `string`   | `gte=` `gt=`                    | minimum length                                                                                              |
+| `string!`  | `lte=` `lt=`                    | maximum length                                                                                              |
+| `string?`  | `len=`                          | exact length                                                                                                |
+|            | `eq=`                           | exact string value                                                                                          |
+|            | `in=`                           | in a comma-separated string list                                                                            |
+|            | `regex=`                        | matches a regex.                                                                                            |
+|            |                                 | If you are troubled with encoding issues you can do: `string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`. |
+|            |                                 |                                                                                                             |
+| `integer`  | `gte=` `gt=`                    | above a integer value                                                                                       |
+| `integer!` | `lte=` `lt=`                    | below a integer value                                                                                       |
+| `integer?` | `eq=`                           | equal to a integer value                                                                                    |
+|            | `in=`                           | in a comma-separated integer list. Invalid values in the schema will result in an Error thrown.             |
+|            |                                 |                                                                                                             |
+| `number`   | `gte=` `gt=`                    | above a number value                                                                                        |
+| `number!`  | `lte=` `lt=`                    | below a number value                                                                                        |
+| `number?`  | `eq=`                           | equal to a number value                                                                                     |
+|            | `in=`                           | in a comma-separated number list. Invalid values in the schema will result in an Error thrown.              |
+|            |                                 |                                                                                                             |
+| `function` | ... todo                        |                                                                                                             |
+|            |                                 |                                                                                                             |
+| `null`     | Only allow `null`               |                                                                                                             |
+|            |                                 |                                                                                                             |
+| `...`      | Allow anything not nil          |                                                                                                             |
+|            |                                 |                                                                                                             |
+| `...?`     | Allow _anything_                |                                                                                                             |
 
 ## Validation : Special types
 
 Some common special types are also supported out of the box
 
-| Type | Meaning |
-|---|---|
-| `uuid` | checks if its a 32 or 36 character string with hexadecimal characters (case insensitive). No support for versions such as v1, v4, ... |
-| `email` | very basic alpha-numeric e-mail check, uses a simple regex |
-| `jwt` | Simply checks if it looks like a JWT string. Does not decode or verify. Handy for initial input checking, but is not security. |
-| `hex-color` | case-insensitive 6 long hexadecimal color starting with `#` |
-| `timestamp-iso8601-ms` | ISO8601 timestamp including `.000` milliseconds; must use the `Z` suffix (not `+00:00`) |
+| Type                   | Meaning                                                                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `uuid`                 | checks if its a 32 or 36 character string with hexadecimal characters (case insensitive). No support for versions such as v1, v4, ... |
+| `email`                | very basic alpha-numeric e-mail check, uses a simple regex                                                                            |
+| `jwt`                  | Simply checks if it looks like a JWT string. Does not decode or verify. Handy for initial input checking, but is not security.        |
+| `hex-color`            | case-insensitive 6 long hexadecimal color starting with `#`                                                                           |
+| `timestamp-iso8601-ms` | ISO8601 timestamp including `.000` milliseconds; must use the `Z` suffix (not `+00:00`)                                               |
 
 ## Errors
 
@@ -135,6 +138,24 @@ This path is compatible with lodash `_.get`, for example:
 
 - `-100 <= -90 evaluated false @ [1].lat` says that the object at array index 1,
   has a incorrect value -100 in field `lat`.
+
+## OpenAPI Support
+
+You can easily convert a validator to an OpenAPI specification:
+
+```js
+const { toOpenAPISchema } = require('crap-in-crap-out');
+console.log(toOpenAPISchema('string!gte=3&lte=20'));
+```
+
+```js
+{
+  type: 'string',
+  nullable: false,
+  minLength: 3,
+  maxLength: 20,
+}
+```
 
 ## Performance
 
