@@ -35,11 +35,12 @@ const data = [
 const validationSchema = [
   // Every element in the array adheres to this object
   {
+    // Must be a set key oneAndTwo, and the value MUST be a integer
     oneAndTwo: ['integer'],
     objArray: [
       {
         // Fields are type checked.
-        // Exclamation (!) makes the field required
+        // Exclamation (!) makes the field required (default)
         // While Question mark (?) makes the field optional
         // After ? or ! you can constrain the value
         a: 'number!eq=-0.1',
@@ -54,10 +55,10 @@ const validationSchema = [
     // Required! number above 0
     positiveNumber: 'number!gt=0',
 
-    // A trailing ? on a object key, means the value can be null
+    // A trailing ? on a object key, means the whole key is allowed to be omitted
     'optionalArray?': ['boolean'],
 
-    // A trailing ? on a object key, means the value can be null
+    // A trailing ? on a object key, means the whole key is allowed to be omitted
     'optionalObject?': { a: 'boolean' },
   },
 
