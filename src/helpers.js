@@ -11,8 +11,7 @@ module.exports = {
     return typeof number === 'number' || number instanceof Number;
   },
   isArray: (arr) => {
-    // simpler version of _.isArray
-    return arr && typeof arr !== 'function' && typeof arr.length === 'number';
+    return Object.prototype.toString.call(arr) === '[object Array]';
   },
   isDefined: (good) => {
     return good !== null && good !== void 0;
