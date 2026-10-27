@@ -6,6 +6,8 @@ const {
   jsType,
 } = require('./helpers.js');
 
+const { toOpenAPISchema } = require('./openapi.js');
+
 const { notAFunction } = require('./errors.js');
 
 const { schemaParser } = require('./schema-parser.js');
@@ -299,4 +301,5 @@ module.exports = {
     }
   },
   guardian: guardian,
+  toOpenAPISchema: toOpenAPISchema,
 };

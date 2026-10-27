@@ -1,6 +1,4 @@
 module.exports = {
-  // isError: (err) ->
-  // 	toString.call(err) == '[object Error]'
   isFunction: (fnc) => {
     return typeof fnc === 'function';
   },
@@ -13,9 +11,7 @@ module.exports = {
     return typeof number === 'number' || number instanceof Number;
   },
   isArray: (arr) => {
-    // simpler version of _.isArray
-    // TODO consider including lodash anyway
-    return arr && typeof arr !== 'function' && typeof arr.length === 'number';
+    return Object.prototype.toString.call(arr) === '[object Array]';
   },
   isDefined: (good) => {
     return good !== null && good !== void 0;
