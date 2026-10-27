@@ -1,10 +1,14 @@
-const { isString, isFunction, isArray, isDefined } = require('./helpers.js');
+const {
+  isString,
+  isFunction,
+  isArray,
+  isDefined,
+  jsType,
+} = require('./helpers.js');
 
 const { notAFunction } = require('./errors.js');
 
 const { schemaParser } = require('./schema-parser.js');
-
-const { toOpenAPISchema } = require('./openapi.js');
 
 const {
   anythingValidator,
@@ -151,7 +155,7 @@ const guard = function (schema, goods) {
   if (isArray(schema)) {
     if (!isArray(goods)) {
       throw {
-        msg: `Value is not an array, but a ${typeof goods}`,
+        msg: `Value is not an array, but a ${jsType(goods)}`,
         path: '',
       };
     }
@@ -191,8 +195,13 @@ const guard = function (schema, goods) {
 
     return result;
   } else {
-    if (!goods) {
-      throw new Error('Value is not an object');
+    // At this point, its an object
+
+    if (!goods || Array.isArray(goods) || typeof goods !== 'object') {
+      throw {
+        msg: `Value is not an object, but ${jsType(goods)}`,
+        path: '',
+      };
     }
 
     // Also handled bad input
@@ -290,5 +299,4 @@ module.exports = {
     }
   },
   guardian: guardian,
-  toOpenAPISchema: toOpenAPISchema,
 };

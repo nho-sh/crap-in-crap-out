@@ -15,7 +15,7 @@ describe('guard', () => {
     assert_guard('number?', 123, 123);
   });
   it('guard works on simple schemas', () => {
-    const fnc = () => {};
+    let fnc = () => {};
 
     const schema = {
       a: 'string',
@@ -217,7 +217,41 @@ describe('guard', () => {
           b: null,
         }
       );
-    }, /Value is not an object/);
+    }, /Value is not an object, but null @ b/);
+  });
+  it('guard checks if a nested object is actually an object and not an array', () => {
+    assert.throws(() => {
+      return guard(
+        {
+          a: 'string',
+          b: {
+            c: 'integer?',
+            d: 'integer?',
+          },
+        },
+        {
+          a: 'abc',
+          b: [],
+        }
+      );
+    }, /Value is not an object, but array @ b/);
+  });
+  it('guard checks if a nested object is actually an object and not a number', () => {
+    assert.throws(() => {
+      return guard(
+        {
+          a: 'string',
+          b: {
+            c: 'integer?',
+            d: 'integer?',
+          },
+        },
+        {
+          a: 'abc',
+          b: 123,
+        }
+      );
+    }, /Value is not an object, but number @ b/);
   });
   it('guard checks if a nested array is present', () => {
     assert.throws(() => {

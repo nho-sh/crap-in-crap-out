@@ -1,4 +1,6 @@
 module.exports = {
+  // isError: (err) ->
+  // 	toString.call(err) == '[object Error]'
   isFunction: (fnc) => {
     return typeof fnc === 'function';
   },
@@ -11,9 +13,22 @@ module.exports = {
     return typeof number === 'number' || number instanceof Number;
   },
   isArray: (arr) => {
-    return Object.prototype.toString.call(arr) === '[object Array]';
+    // simpler version of _.isArray
+    // TODO consider including lodash anyway
+    return arr && typeof arr !== 'function' && typeof arr.length === 'number';
   },
   isDefined: (good) => {
     return good !== null && good !== void 0;
+  },
+  jsType(good) {
+    if (good === null) {
+      return 'null';
+    } else if (good === undefined) {
+      return 'undefined';
+    } else if (Array.isArray(good)) {
+      return 'array';
+    } else {
+      return typeof good;
+    }
   },
 };
