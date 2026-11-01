@@ -1,4 +1,4 @@
-const { isString, isFunction, isFloat, isDefined } = require('./helpers.js');
+const { isString, isFunction, isNumber, isDefined } = require('./helpers.js');
 
 // Validator logic:
 //   Return false if okay
@@ -121,7 +121,7 @@ const numberValidator = function (parsedSchema) {
       }
       return 'null was supplied, but not allowed';
     }
-    if (isFloat(good)) {
+    if (isNumber(good)) {
       if (isDefined(parsedSchema.eq) && good !== parsedSchema.eq) {
         return `${good} is not the expected value ${parsedSchema.eq}`;
       }

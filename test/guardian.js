@@ -7,7 +7,7 @@ describe('guardian', function () {
   it('guardian checks input', function () {
     assert.throws(function () {
       return guardian(null, null);
-    }, /Function got no schema's to validate with, pass either input or out schema, or both./);
+    }, /Function got no schemas to validate with, pass either input or out schema, or both./);
     assert.throws(function () {
       return guardian({}, {});
     }, /Function input schema always needs to be an array of schemas, one for each input argument. It can also be null or undefined./);

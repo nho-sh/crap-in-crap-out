@@ -35,7 +35,7 @@ const data = [
 const validationSchema = [
   // Every element in the array adheres to this object
   {
-    // Must be a set key oneAndTwo, and the value MUST be a integer
+    // Must be a set key oneAndTwo, and the value MUST be an integer
     oneAndTwo: ['integer'],
     objArray: [
       {
@@ -97,9 +97,9 @@ A format that is well know and easy enough to read.
 |            | `regex=`                        | matches a regex.                                                                                            |
 |            |                                 | If you are troubled with encoding issues you can do: `string?regex=${encodeURIComponent('\\+?[\\d\\s]+')}`. |
 |            |                                 |                                                                                                             |
-| `integer`  | `gte=` `gt=`                    | above a integer value                                                                                       |
-| `integer!` | `lte=` `lt=`                    | below a integer value                                                                                       |
-| `integer?` | `eq=`                           | equal to a integer value                                                                                    |
+| `integer`  | `gte=` `gt=`                    | above an integer value                                                                                      |
+| `integer!` | `lte=` `lt=`                    | below an integer value                                                                                      |
+| `integer?` | `eq=`                           | equal to an integer value                                                                                   |
 |            | `in=`                           | in a comma-separated integer list. Invalid values in the schema will result in an Error thrown.             |
 |            |                                 |                                                                                                             |
 | `number`   | `gte=` `gt=`                    | above a number value                                                                                        |

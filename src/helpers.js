@@ -3,18 +3,17 @@ module.exports = {
     return typeof fnc === 'function';
   },
   isString: (str) => {
-    return typeof str === 'string' || str instanceof String;
+    return typeof str === 'string';
   },
-
   // istanbul ignore next
-  isFloat: (number) => {
+  isNumber: (number) => {
     return typeof number === 'number' || number instanceof Number;
   },
   isArray: (arr) => {
     return Object.prototype.toString.call(arr) === '[object Array]';
   },
   isDefined: (good) => {
-    return good !== null && good !== void 0;
+    return good != null;
   },
   jsType(good) {
     if (good === null) {

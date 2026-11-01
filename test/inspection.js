@@ -141,7 +141,7 @@ describe('inspection', function () {
       'integer?eq=nonsense',
       /integer\?eq=nonsense is not an integer: eq=nonsense/
     );
-    assert_error('integer!in=', /integer!in= is not a integer: in=/);
+    assert_error('integer!in=', /integer!in= is not an integer: in=/);
     for (let i = 0; i <= 100; i++) {
       assert_not_inspect('integer', notInteger());
     }

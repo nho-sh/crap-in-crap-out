@@ -74,7 +74,7 @@ const valueChecker = function (schema) {
             const val = parseInt(int, 10);
             if (isNaN(val)) {
               throw new Error(
-                `${parsedSchema.source} is not a integer: in=${parsedSchema.in}`
+                `${parsedSchema.source} is not an integer: in=${parsedSchema.in}`
               );
             }
             return val;
@@ -130,7 +130,7 @@ const buildFinalError = (error) => {
   if (error instanceof Error) {
     return error;
   } else {
-    const fullPath = error.path.endsWith('.')
+    const fullPath = error.path?.endsWith('.')
       ? error.path.substring(0, error.path.length - 1)
       : error.path;
 
@@ -150,7 +150,7 @@ const guard = function (schema, goods) {
       };
     } else {
       // Schema is validated at this point
-      // Om case goods is undefined, we fallback to null
+      // In case goods is undefined, we fallback to null
       return goods != null ? goods : null;
     }
   }
@@ -250,7 +250,7 @@ const guard = function (schema, goods) {
 const guardian = (input_schema, out_schema, funcToWrap) => {
   if (!input_schema && !out_schema) {
     throw new Error(
-      "Function got no schema's to validate with, pass either input or out schema, or both."
+      'Function got no schemas to validate with, pass either input or out schema, or both.'
     );
   }
   if (input_schema && !isArray(input_schema)) {
